@@ -1,0 +1,4 @@
+#!/bin/sh
+
+sed -n -e'/docName/s,.*draft-.*-\([0-9]*\).*,\1,p' $*
+
