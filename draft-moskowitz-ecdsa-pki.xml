@@ -397,18 +397,9 @@ INSERT_TEXT_FROM_FILE scripts/run-ocsp-server.sh END
 <t>
 	In another window, test out a certificate status with:
 </t>
-<figure> <artwork>
-
-targetcert=fqdn
-#targetcert=clientemail
-#targetcert=DevID
-
-openssl ocsp -CAfile $dir/certs/ca-chain.cert.pem \
-      -url http://127.0.0.1:2560 -resp_text -sha256\
-      -issuer $dir/certs/$intermediate.cert.pem \
-      -cert $dir/certs/$targetcert.cert.pem
-
-</artwork> </figure>
+<figure>
+INSERT_TEXT_FROM_FILE scripts/test-ocsp-server.sh END
+</figure>
 <t>
 	Revoke the certificate, <xref target="RevokeCert" />, restart the
 	test Responder again as above, then check the certificate status.
