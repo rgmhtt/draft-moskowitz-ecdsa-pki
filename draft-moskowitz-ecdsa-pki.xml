@@ -566,7 +566,7 @@ umask 077
 <figure> <artwork><![CDATA[
 $restore_mask
 ]]></artwork> </figure>
-or just close the shell that was used, and start a new one.
+or just close the shell that was used, and start a new one.  (The -p option to umask is a bash-ism)
 </t>
 <t>
 There is nothing in these recipes that requires super-user on the system creating the
