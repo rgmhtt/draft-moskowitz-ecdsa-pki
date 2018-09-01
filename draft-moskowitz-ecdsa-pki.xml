@@ -532,7 +532,7 @@ openssl x509 -outform der -in certificate.pem -out certificate.der
 	target="WeakKeys">Studies</xref> have found excessive amount of
 	certificates, all with the same keys due to bad randomness on the
 	generating systems.  The amount of entropy available for these
-	random numbers can be tested.  On Fedora/Centos use:
+	random numbers can be tested.  On Fedora/Centos and most Linux systems use:
 <figure> <artwork><![CDATA[
 cat /proc/sys/kernel/random/entropy_avail
 ]]></artwork> </figure>
@@ -556,8 +556,31 @@ umask 077
 <figure> <artwork><![CDATA[
 $restore_mask
 ]]></artwork> </figure>
+or just close the shell that was used, and start a new one.
+</t>
+<t>
+There is nothing in these recipes that requires super-user on the system creating the
+certificates.  Provided that adequate randomness is available, a virtual machine or container
+is entirely appropriate.  Containers tend to have better access to randomness than virtual
+machines.
+</t>
+<t>
+The scripts and configuration files and in particular, private keys, may be kept offline
+on a USB key for instance, and loaded when needed.
+</t>
+<t>
+The OCSP server needs to be online and available to all clients that will use the
+certificates. This may mean available on the Internet.  A firewall can protect the
+OCSP server, and port-forwards and/or ACL rules can restrict access to just the OCSP port.
+OCSP artifacts are signed by a key designed for that purpose only so do not require that
+the associated CA key be available online.
+</t>
+<t>
+Generating new CRLs, however, requires that the CA signing key be online, which is one of
+the reasons for creating an intermediate CA.
 </t>
 </section>
+
 </section>
 <section title="Acknowledgments">
 <t>
