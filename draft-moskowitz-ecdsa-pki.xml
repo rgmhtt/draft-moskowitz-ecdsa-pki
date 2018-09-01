@@ -231,36 +231,9 @@ INSERT_TEXT_FROM_FILE scripts/setup1.sh END
 	keypair, and the Root certificate.  Included are commands to view
 	the file contents.
 </t>
-<figure> <artwork>
-
-# Create passworded keypair file
-
-openssl genpkey -aes256 -algorithm ec\
-    -pkeyopt ec_paramgen_curve:prime256v1\
-    -outform $format -pkeyopt ec_param_enc:named_curve\
-    -out $dir/private/ca.key.$format
-chmod 400 $dir/private/ca.key.$format
-openssl pkey -inform $format -in $dir/private/ca.key.$format\
-    -text -noout
-
-# Create Self-signed Root Certificate file
-# 7300 days = 20 years; Intermediate CA is 10 years.
-
-openssl req -config $dir/openssl-root.cnf\
-     -set_serial 0x$(openssl rand -hex $sn)\
-     -keyform $format -outform $format\
-     -key $dir/private/ca.key.$format -subj "$DN"\
-     -new -x509 -days 7300 -sha256 -extensions v3_ca\
-     -out $dir/certs/ca.cert.$format
-
-#
-
-openssl x509 -inform $format -in $dir/certs/ca.cert.$format\
-     -text -noout
-openssl x509 -purpose -inform $format\
-     -in $dir/certs/ca.cert.$format -inform $format
-
-</artwork> </figure>
+<figure>
+INSERT_TEXT_FROM_FILE scripts/rootcert.sh END
+</figure>
 </section>
 </section>
 <section anchor="IntermediateLevel" title="The Intermediate level">
@@ -270,35 +243,9 @@ openssl x509 -purpose -inform $format\
 	the variables to suit your needs.  In particular, set the variables
 	for CRL and/or OCSP support.
 </t>
-<figure> <artwork>
-
-export dir=$cadir/intermediate
-mkdir $dir
-cd $dir
-mkdir certs crl csr newcerts private
-chmod 700 private
-touch index.txt
-sn=8 # hex 8 is minimum, 19 is maximum
-echo 1000 > $dir/crlnumber
-
-# cd $dir
-export crlDP=
-# For CRL support use uncomment these:
-#crl=intermediate.crl.pem
-#crlurl=www.htt-consult.com/pki/$crl
-#export crlDP="URI:http://$crlurl"
-export default_crl_days=30
-export ocspIAI=
-# For OCSP support use uncomment these:
-#ocspurl=ocsp.htt-consult.com
-#export ocspIAI="OCSP;URI:http://$ocspurl"
-
-commonName="/CN=Signing CA"
-DN=$countryName$stateOrProvinceName$localityName$organizationName
-DN=$DN$organizationalUnitName$commonName
-echo $DN
-
-</artwork> </figure>
+<figure>
+INSERT_TEXT_FROM_FILE scripts/intermediate.sh END
+</figure>
 <t>
 	Create the file, $dir/openssl-intermediate.cnf from the contents in
 	<xref target="Intermediateconfig" />.  Uncomment lines for
