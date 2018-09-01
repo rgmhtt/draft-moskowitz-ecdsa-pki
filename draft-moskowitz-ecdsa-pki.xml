@@ -391,19 +391,9 @@ INSERT_TEXT_FROM_FILE scripts/ocsp-setup.sh END
 	In a terminal window, set variables dir and ocspurl (examples
 	below), then run the simple OCSP service:
 </t>
-<figure> <artwork>
-
-dir=/root/ca/intermediate
-ocspurl=ocsp.htt-consult.com
-
-openssl ocsp -port 2560 -text -rmd sha256\
-      -index $dir/index.txt \
-      -CA $dir/certs/ca-chain.cert.pem \
-      -rkey $dir/private/$ocspurl.key.pem \
-      -rsigner $dir/certs/$ocspurl.cert.pem \
-      -nrequest 1
-
-</artwork> </figure>
+<figure>
+INSERT_TEXT_FROM_FILE scripts/run-ocsp-server.sh END
+</figure>
 <t>
 	In another window, test out a certificate status with:
 </t>
