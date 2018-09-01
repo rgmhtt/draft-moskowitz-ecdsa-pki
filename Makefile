@@ -1,9 +1,27 @@
 VERSION=$(shell ./getver ${DRAFT}.xml )
 
 # insert your ID here for the "submit" target
-IETFUSER=mcr+ietf@sandelman.ca
+IETFUSER?=mcr+ietf@sandelman.ca
 DRAFT=draft-moskowitz-ecdsa-pki
+EXTRA_FILES=
 EXTRA_FILES+=scripts/setup1.sh
+EXTRA_FILES+=scripts/crl-creation.sh
+EXTRA_FILES+=scripts/end-client.sh
+EXTRA_FILES+=scripts/end-server.sh
+EXTRA_FILES+=scripts/idevid-csr-cert.sh
+EXTRA_FILES+=scripts/intermediate_1ar_cert.sh
+EXTRA_FILES+=scripts/intermediate_1ar_setup.sh
+EXTRA_FILES+=scripts/intermediate_cert.sh
+EXTRA_FILES+=scripts/intermediate_setup.sh
+EXTRA_FILES+=scripts/ocsp-setup.sh
+EXTRA_FILES+=scripts/revoke-step1.sh
+EXTRA_FILES+=scripts/rootcert.sh
+EXTRA_FILES+=scripts/run-ocsp-server.sh
+EXTRA_FILES+=scripts/san-creation-pipe.sh
+EXTRA_FILES+=scripts/test-ocsp-server.sh
+EXTRA_FILES+=configs/openssl-8021ARintermediate.cnf
+EXTRA_FILES+=configs/openssl-intermediate.cnf
+EXTRA_FILES+=configs/openssl-root.cnf
 
 ${DRAFT}-${VERSION}.txt: ${DRAFT}.txt ${DRAFT}.html
 	cp ${DRAFT}.txt ${DRAFT}-${VERSION}.txt
@@ -49,3 +67,7 @@ clean:
 
 version:
 	@echo Version: ${VERSION}
+
+vars:
+	@echo Version: ${VERSION}
+	@echo IETFuser: ${IETFUSER}
