@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE rfc SYSTEM "rfc2629.dtd" [ 
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
   <!ENTITY ieee_802_1ar SYSTEM "https://xml2rfc.tools.ietf.org/public/rfc/bibxml6/reference.IEEE.802.1AR_2009.xml">
 ]>
 
 <?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
  <?rfc toc="yes" ?>
  <?rfc symrefs="yes" ?>
- <?rfc sortrefs="yes"?> 
+ <?rfc sortrefs="yes"?>
  <?rfc compact="yes" ?>
- <?rfc subcompact="no" ?>  
+ <?rfc subcompact="no" ?>
  <?rfc iprnotified="no" ?>
   <?rfc strict="no" ?>
 
@@ -18,11 +18,11 @@
         <author fullname="Robert Moskowitz" initials="R." surname="Moskowitz" >
         <organization>HTT Consulting</organization>
         <address>
-        <postal> 
+        <postal>
           <street> </street>
           <city>Oak Park</city>
           <region>MI</region>
-          <code>48237</code> 
+          <code>48237</code>
         </postal>
         <email>rgm@labs.htt-consult.com</email>
         </address>
@@ -50,6 +50,16 @@
         <email>Frank.xialiang@huawei.com</email>
         </address>
     </author>
+    <author fullname="Michael C. Richardson" initials="M."
+            surname="Richardson">
+      <organization abbrev="Sandelman">Sandelman Software Works</organization>
+
+      <address>
+        <email>mcr+ietf@sandelman.ca</email>
+
+        <uri>http://www.sandelman.ca/</uri>
+      </address>
+    </author>
 <date year="2018"/>
    <area>Security Area</area>
    <workgroup>wg TBD</workgroup>
@@ -63,10 +73,10 @@
 
 <abstract>
 <t>
-		This memo provides a guide for building a PKI (Public Key 
-		Infrastructure) using openSSL.  All certificates in this guide 
-		are ECDSA, P-256, with SHA256 certificates.  Along with common 
-		End Entity certificates, this guide provides instructions for 
+		This memo provides a guide for building a PKI (Public Key
+		Infrastructure) using openSSL.  All certificates in this guide
+		are ECDSA, P-256, with SHA256 certificates.  Along with common
+		End Entity certificates, this guide provides instructions for
 		creating IEEE 802.1AR iDevID Secure Device certificates.
 </t>
 </abstract>
@@ -74,112 +84,112 @@
 <middle>
 <section anchor="intro" title="Introduction">
 <t>
-		The IETF has a plethora of security solutions targeted at IoT.  
-		Yet all too many IoT products are deployed with no or 
-		improperly configured security.  In particular resource 
-		constrained IoT devices and non-IP IoT networks have not been 
+		The IETF has a plethora of security solutions targeted at IoT.
+		Yet all too many IoT products are deployed with no or
+		improperly configured security.  In particular resource
+		constrained IoT devices and non-IP IoT networks have not been
 		well served in the IETF.
 </t>
 <t>
-		Additionally, more IETF (e.g. DOTS, NETCONF) efforts are 
-		requiring secure identities, but are vague on the nature of 
-		these identities other than to recommend use of X.509 digital 
+		Additionally, more IETF (e.g. DOTS, NETCONF) efforts are
+		requiring secure identities, but are vague on the nature of
+		these identities other than to recommend use of X.509 digital
 		certificates and perhaps TLS.
 </t>
 <t>
-		This effort provides the steps, using the openSSL application, 
-		to create such a PKI of ECDSA certificates.  The goal is that 
-		any developer or tester can follow these steps, create the 
-		basic objects needed and establish the validity of the 
-		standard/program design.  This guide can even be used to create 
-		a production PKi, though additional steps need to be taken. 
-		This could be very useful to a small vendor needing to include 
-		<xref target="IEEE.802.1AR_2009">802.1AR</xref> iDevIDs in 
+		This effort provides the steps, using the openSSL application,
+		to create such a PKI of ECDSA certificates.  The goal is that
+		any developer or tester can follow these steps, create the
+		basic objects needed and establish the validity of the
+		standard/program design.  This guide can even be used to create
+		a production PKi, though additional steps need to be taken.
+		This could be very useful to a small vendor needing to include
+		<xref target="IEEE.802.1AR_2009">802.1AR</xref> iDevIDs in
 		their product.
 </t>
 <t>
-		This guide was tested with openSSL 1.1.0f on Fedora 26 and 
-		creates PEM-based certificates.  DER based certificates fails 
+		This guide was tested with openSSL 1.1.0f on Fedora 26 and
+		creates PEM-based certificates.  DER based certificates fails
 		(see <xref target="DER" />).
 </t>
 </section>
 <section anchor="terms" title="Terms and Definitions">
 <section title="Requirements Terminology">
 <t>
-                The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL 
-                NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and 
-                "OPTIONAL" in this document are to be interpreted as described 
+                The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
+                NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and
+                "OPTIONAL" in this document are to be interpreted as described
                 in <xref target="RFC2119">RFC 2119</xref>.
 </t>
 </section>
 <section title="Notations">
- <t> This section will contain notations </t> 
-</section> 
+ <t> This section will contain notations </t>
+</section>
 <section title="Definitions">
         <t>
                 There are no draft specific definitions at this time
         </t>
-</section> 
-</section> 
+</section>
+</section>
 <section anchor="BasicPKI" title="The Basic PKI feature set">
 <t>
-	A basic pki has two levels of hierarchy: Root and Intermediate. The 
-	Root level has the greatest risk, and is the least used.  It only 
-	signs the Intermediate level signing certificate.  As such, once 
-	the Root level is created and signs the Intermediate level 
-	certificate it can be locked up.  In fact, the Root level could 
-	exist completely on a mSD boot card for an ARM small computer like 
-	a RaspberryPi.  A copy of this card came be made and securely 
+	A basic pki has two levels of hierarchy: Root and Intermediate. The
+	Root level has the greatest risk, and is the least used.  It only
+	signs the Intermediate level signing certificate.  As such, once
+	the Root level is created and signs the Intermediate level
+	certificate it can be locked up.  In fact, the Root level could
+	exist completely on a mSD boot card for an ARM small computer like
+	a RaspberryPi.  A copy of this card came be made and securely
 	stored in a different location.
 </t>
 <t>
-	The Root level contains the Root certificate private key, a 
-	database of all signed certificates, and  the public certificate.  
-	It can also contain the Intermediate level public certificate and a 
+	The Root level contains the Root certificate private key, a
+	database of all signed certificates, and  the public certificate.
+	It can also contain the Intermediate level public certificate and a
 	Root level CRL.
 </t>
 <t>
-	The Intermediate level contains the Intermediate certificate 
-	private key, the public certificate, a database of all signed 
-	certificates, the certificate trust chain, and Intermediate level 
-	CRL.  It can also contain the End Entity public certificates.  The 
-	private key file needs to be keep securely.  For example as with 
-	the Root level, a mSD image for an ARM computer could contain the 
-	complete Intermediate level. This image is kept offline.  The End 
-	Entity CSR is copied to it, signed, and then the signed certificate 
-	and updated database are moved to the public image that lacks the 
+	The Intermediate level contains the Intermediate certificate
+	private key, the public certificate, a database of all signed
+	certificates, the certificate trust chain, and Intermediate level
+	CRL.  It can also contain the End Entity public certificates.  The
+	private key file needs to be keep securely.  For example as with
+	the Root level, a mSD image for an ARM computer could contain the
+	complete Intermediate level. This image is kept offline.  The End
+	Entity CSR is copied to it, signed, and then the signed certificate
+	and updated database are moved to the public image that lacks the
 	private key.
 </t>
 <t>
-	For a simple test pki, all files can be kept on a single system 
+	For a simple test pki, all files can be kept on a single system
 	that is managed by the tester.
 </t>
 <t>
-	End Entities create a key pair and a Certificate Signing Request 
-	(CSR).  The private key is stored securely.  The CSR is delivered 
-	to the Intermediate level which uses the CSR to create the End 
-	Entity certificate.  This certificate, along with the trust chain 
+	End Entities create a key pair and a Certificate Signing Request
+	(CSR).  The private key is stored securely.  The CSR is delivered
+	to the Intermediate level which uses the CSR to create the End
+	Entity certificate.  This certificate, along with the trust chain
 	back to the root, is then returned to the End Entity.
 </t>
 <t>
-	There is more to a pki, but this suffices for most development and 
+	There is more to a pki, but this suffices for most development and
 	testing needs.
 </t>
-</section> 
+</section>
 <section anchor="RootLevel" title="Getting started and the Root level">
 <t>
-    This guide was developed on a Fedora 26 armv7hl system (Cubieboard2 
-    SoC).  It should work on most Linux and similar systems.  All work 
-    was done in a terminal window with extensive "cutting and pasting" 
-    from a draft guide into the terminal window.  Users of this guide 
+    This guide was developed on a Fedora 26 armv7hl system (Cubieboard2
+    SoC).  It should work on most Linux and similar systems.  All work
+    was done in a terminal window with extensive "cutting and pasting"
+    from a draft guide into the terminal window.  Users of this guide
     may find different behaviors based on their system.
 </t>
 <section anchor="FirstStep" title="Setting up the Environment">
 <t>
-    The first step is to create the pki environment.  Modify the 
+    The first step is to create the pki environment.  Modify the
     variables to suit your needs.
 </t>
-<figure> 
+<figure>
 INSERT_TEXT_FROM_FILE scripts/setup1.sh END
 </figure>
 <t>
@@ -210,616 +220,247 @@ INSERT_TEXT_FROM_FILE scripts/setup1.sh END
 </list>
 </t>
 <t>
-    The Serial Number length for a public pki ranges from 8 to 19 
-    bytes.  The use of 19 rather than 20 is to accommodate the hex 
-    representation of the Serial Number.  If it has a one in the high 
+    The Serial Number length for a public pki ranges from 8 to 19
+    bytes.  The use of 19 rather than 20 is to accommodate the hex
+    representation of the Serial Number.  If it has a one in the high
     order bit, DER encoding rules will place a 0x00 in front.
 </t>
 <t>
-	The DN and SAN fields are examples.  Change them to appropriate 
-	values.  If you leave one blank, it will be left out of the 
+	The DN and SAN fields are examples.  Change them to appropriate
+	values.  If you leave one blank, it will be left out of the
 	Certificate.  "OU" above is an example of an empty DN object.
 </t>
 <t>
-	Create the file, $dir/openssl-root.cnf from the contents in <xref 
+	Create the file, $dir/openssl-root.cnf from the contents in <xref
 	target="Rootconfig" />.
 </t>
-</section> 
+</section>
 <section anchor="RootCert" title="Create the Root Certificate">
 <t>
-	Next are the openssl commands to create the Root certificate 
-	keypair, and the Root certificate.  Included are commands to view 
+	Next are the openssl commands to create the Root certificate
+	keypair, and the Root certificate.  Included are commands to view
 	the file contents.
 </t>
-<figure> <artwork>
-
-# Create passworded keypair file
-
-openssl genpkey -aes256 -algorithm ec\
-    -pkeyopt ec_paramgen_curve:prime256v1\
-    -outform $format -pkeyopt ec_param_enc:named_curve\
-    -out $dir/private/ca.key.$format
-chmod 400 $dir/private/ca.key.$format
-openssl pkey -inform $format -in $dir/private/ca.key.$format\
-    -text -noout
-
-# Create Self-signed Root Certificate file
-# 7300 days = 20 years; Intermediate CA is 10 years.
-
-openssl req -config $dir/openssl-root.cnf\
-     -set_serial 0x$(openssl rand -hex $sn)\
-     -keyform $format -outform $format\
-     -key $dir/private/ca.key.$format -subj "$DN"\
-     -new -x509 -days 7300 -sha256 -extensions v3_ca\
-     -out $dir/certs/ca.cert.$format
-
-# 
-
-openssl x509 -inform $format -in $dir/certs/ca.cert.$format\
-     -text -noout
-openssl x509 -purpose -inform $format\
-     -in $dir/certs/ca.cert.$format -inform $format
-
-</artwork> </figure>
-</section> 
-</section> 
+<figure>
+INSERT_TEXT_FROM_FILE scripts/rootcert.sh END
+</figure>
+</section>
+</section>
 <section anchor="IntermediateLevel" title="The Intermediate level">
 <section anchor="NextStep" title="Setting up the Intermediate Certificate Environment">
 <t>
-	The next part is to create the Intermediate pki environment. Modify 
-	the variables to suit your needs.  In particular, set the variables 
+	The next part is to create the Intermediate pki environment. Modify
+	the variables to suit your needs.  In particular, set the variables
 	for CRL and/or OCSP support.
 </t>
-<figure> <artwork>
-
-export dir=$cadir/intermediate
-mkdir $dir
-cd $dir
-mkdir certs crl csr newcerts private
-chmod 700 private
-touch index.txt
-sn=8 # hex 8 is minimum, 19 is maximum
-echo 1000 > $dir/crlnumber
-
-# cd $dir
-export crlDP=
-# For CRL support use uncomment these:
-#crl=intermediate.crl.pem
-#crlurl=www.htt-consult.com/pki/$crl
-#export crlDP="URI:http://$crlurl"
-export default_crl_days=30
-export ocspIAI=
-# For OCSP support use uncomment these:
-#ocspurl=ocsp.htt-consult.com
-#export ocspIAI="OCSP;URI:http://$ocspurl"
-
-commonName="/CN=Signing CA"
-DN=$countryName$stateOrProvinceName$localityName$organizationName
-DN=$DN$organizationalUnitName$commonName
-echo $DN
-
-</artwork> </figure>
+<figure>
+INSERT_TEXT_FROM_FILE scripts/intermediate_setup.sh END
+</figure>
 <t>
-	Create the file, $dir/openssl-intermediate.cnf from the contents in 
-	<xref target="Intermediateconfig" />.  Uncomment lines for 
-	crlDistributionPoints and authorityInfoAccess if using CRLs or OSCP 
+	Create the file, $dir/openssl-intermediate.cnf from the contents in
+	<xref target="Intermediateconfig" />.  Uncomment lines for
+	crlDistributionPoints and authorityInfoAccess if using CRLs or OSCP
 	repectfully.
 </t>
-</section> 
+</section>
 <section anchor="IntermediateCert" title="Create the Intermediate Certificate">
 <t>
-	Here are the openssl commands to create the Intermediate 
-	certificate keypair, Intermediate certificate signed request (CSR), 
-	and the Intermediate certificate.  Included are commands to view 
+	Here are the openssl commands to create the Intermediate
+	certificate keypair, Intermediate certificate signed request (CSR),
+	and the Intermediate certificate.  Included are commands to view
 	the file contents.
 </t>
-<figure> <artwork>
-
-# Create passworded keypair file
-
-openssl genpkey -aes256 -algorithm ec\
-    -pkeyopt ec_paramgen_curve:prime256v1 \
-    -outform $format -pkeyopt ec_param_enc:named_curve\
-    -out $dir/private/intermediate.key.$format
-chmod 400 $dir/private/intermediate.key.$format
-openssl pkey -inform $format\
-    -in $dir/private/intermediate.key.$format -text -noout
-
-# Create the CSR
-
-openssl req -config $cadir/openssl-root.cnf\
-    -key $dir/private/intermediate.key.$format \
-    -keyform $format -outform $format -subj "$DN" -new -sha256\
-    -out $dir/csr/intermediate.csr.$format
-openssl req -text -noout -verify -inform $format\
-    -in $dir/csr/intermediate.csr.$format
-
-
-# Create Intermediate Certificate file
-
-openssl rand -hex $sn > $dir/serial # hex 8 is minimum, 19 is maximum
-# Note 'openssl ca' does not support DER format
-openssl ca -config $cadir/openssl-root.cnf -days 3650\
-    -extensions v3_intermediate_ca -notext -md sha256 \
-    -in $dir/csr/intermediate.csr.$format\
-    -out $dir/certs/intermediate.cert.pem
-
-chmod 444 $dir/certs/intermediate.cert.$format
-
-openssl verify -CAfile $cadir/certs/ca.cert.$format\
-     $dir/certs/intermediate.cert.$format
-
-openssl x509 -noout -text -in $dir/certs/intermediate.cert.$format
-
-# Create the certificate chain file
-
-cat $dir/certs/intermediate.cert.$format\
-   $cadir/certs/ca.cert.$format > $dir/certs/ca-chain.cert.$format
-chmod 444 $dir/certs/ca-chain.cert.$format
-
-
-</artwork> </figure>
-</section> 
+<figure>
+INSERT_TEXT_FROM_FILE scripts/intermediate_cert.sh END
+</figure>
+</section>
 <section anchor="ServerCert" title="Create a Server EE Certificate">
 <t>
-	Here are the openssl commands to create a Server End Entity 
-	certificate keypair, Server certificate signed request (CSR), 
-	and the Server certificate.  Included are commands to view 
+	Here are the openssl commands to create a Server End Entity
+	certificate keypair, Server certificate signed request (CSR),
+	and the Server certificate.  Included are commands to view
 	the file contents.
 </t>
-<figure> <artwork>
-
-commonName=
-DN=$countryName$stateOrProvinceName$localityName
-DN=$DN$organizationName$organizationalUnitName$commonName
-echo $DN
-serverfqdn=www.example.com
-emailaddr=postmaster@htt-consult.com
-export subjectAltName="DNS:$serverfqdn, email:$emailaddr"
-echo $subjectAltName
-openssl genpkey -algorithm ec -pkeyopt ec_paramgen_curve:prime256v1\
-    -pkeyopt ec_param_enc:named_curve\
-    -out $dir/private/$serverfqdn.key.$format
-chmod 400 $dir/private/$serverfqdn.$format
-openssl pkey -in $dir/private/$serverfqdn.key.$format -text -noout
-openssl req -config $dir/openssl-intermediate.cnf\
-    -key $dir/private/$serverfqdn.key.$format \
-    -subj "$DN" -new -sha256 -out $dir/csr/$serverfqdn.csr.$format
-
-openssl req -text -noout -verify -in $dir/csr/$serverfqdn.csr.$format
-
-openssl rand -hex $sn > $dir/serial # hex 8 is minimum, 19 is maximum
-# Note 'openssl ca' does not support DER format
-openssl ca -config $dir/openssl-intermediate.cnf -days 375\
-    -extensions server_cert -notext -md sha256 \
-    -in $dir/csr/$serverfqdn.csr.$format\
-    -out $dir/certs/$serverfqdn.cert.$format
-chmod 444 $dir/certs/$serverfqdn.cert.$format
-
-openssl verify -CAfile $dir/certs/ca-chain.cert.$format\
-     $dir/certs/$serverfqdn.cert.$format
-openssl x509 -noout -text -in $dir/certs/$serverfqdn.cert.$format
-
-</artwork> </figure>
-</section> 
+<figure>
+INSERT_TEXT_FROM_FILE scripts/end-server.sh END
+</figure>
+</section>
 <section anchor="ClientCert" title="Create a Client EE Certificate">
 <t>
-	Here are the openssl commands to create a Client End Entity 
-	certificate keypair, Client certificate signed request (CSR), 
-	and the Client certificate.  Included are commands to view 
+	Here are the openssl commands to create a Client End Entity
+	certificate keypair, Client certificate signed request (CSR),
+	and the Client certificate.  Included are commands to view
 	the file contents.
 </t>
-<figure> <artwork>
-
-commonName=
-UserID="/UID=rgm"
-DN=$countryName$stateOrProvinceName$localityName
-DN=$DN$organizationName$organizationalUnitName$commonName$UserID
-echo $DN
-clientemail=rgm@example.com
-export subjectAltName="email:$clientemail"
-echo $subjectAltName
-openssl genpkey -algorithm ec -pkeyopt ec_paramgen_curve:prime256v1\
-    -pkeyopt ec_param_enc:named_curve\
-    -out $dir/private/$clientemail.key.$format
-chmod 400 $dir/private/$clientemail.$format
-openssl pkey -in $dir/private/$clientemail.key.$format -text -noout
-openssl req -config $dir/openssl-intermediate.cnf\
-    -key $dir/private/$clientemail.key.$format \
-    -subj "$DN" -new -sha256 -out $dir/csr/$clientemail.csr.$format
-
-openssl req -text -noout -verify\
-    -in $dir/csr/$clientemail.csr.$format
-
-openssl rand -hex $sn > $dir/serial # hex 8 is minimum, 19 is maximum
-# Note 'openssl ca' does not support DER format
-openssl ca -config $dir/openssl-intermediate.cnf -days 375\
-    -extensions usr_cert -notext -md sha256 \
-    -in $dir/csr/$clientemail.csr.$format\
-    -out $dir/certs/$clientemail.cert.$format
-chmod 444 $dir/certs/$clientemail.cert.$format
-
-openssl verify -CAfile $dir/certs/ca-chain.cert.$format\
-     $dir/certs/$clientemail.cert.$format
-openssl x509 -noout -text -in $dir/certs/$clientemail.cert.$format
-
-</artwork> </figure>
-</section> 
-</section> 
+<figure>
+INSERT_TEXT_FROM_FILE scripts/end-client.sh END
+</figure>
+</section>
+</section>
 <section anchor="Intermediate8021ARLevel" title="The 802.1AR Intermediate level">
 <section anchor="Step8021AR" title="Setting up the 802.1AR Intermediate Certificate Environment">
 <t>
-	The next part is to create the 802.1AR Intermediate pki 
-	environment.  This is very similar to the Intermediate pki 
+	The next part is to create the 802.1AR Intermediate pki
+	environment.  This is very similar to the Intermediate pki
 	environment.  Modify the variables to suit your needs.
 </t>
-<figure> <artwork>
-
-export dir=$cadir/8021ARintermediate
-mkdir $dir
-cd $dir
-mkdir certs crl csr newcerts private
-chmod 700 private
-touch index.txt
-sn=8 # hex 8 is minimum, 19 is maximum
-echo 1000 > $dir/crlnumber
-
-# cd $dir
-export crlDP=
-# For CRL support use uncomment these:
-#crl=8021ARintermediate.crl.pem
-#crlurl=www.htt-consult.com/pki/$crl
-#export crlDP="URI:http://$crlurl"
-export default_crl_days=30
-export ocspIAI=
-# For OCSP support use uncomment these:
-#ocspurl=ocsp.htt-consult.com
-#export ocspIAI="OCSP;URI:http://$ocspurl"
-
-countryName="/C=US"
-stateOrProvinceName="/ST=MI"
-localityName="/L=Oak Park"
-organizationName="/O=HTT Consulting"
-organizationalUnitName="/OU=Devices"
-#organizationalUnitName=
-commonName="/CN=802.1AR CA"
-DN=$countryName$stateOrProvinceName$localityName$organizationName
-DN=$DN$organizationalUnitName$commonName
-echo $DN
-export subjectAltName=email:postmaster@htt-consult.com
-echo $subjectAltName
-
-</artwork> </figure>
+<figure>
+INSERT_TEXT_FROM_FILE scripts/intermediate_1ar_setup.sh END
+</figure>
 <t>
-	Create the file, $dir/openssl-8021ARintermediate.cnf from the 
-	contents in <xref target="Intermediate8021ARconfig" />.  Uncomment 
-	lines for crlDistributionPoints and authorityInfoAccess if using 
+	Create the file, $dir/openssl-8021ARintermediate.cnf from the
+	contents in <xref target="Intermediate8021ARconfig" />.  Uncomment
+	lines for crlDistributionPoints and authorityInfoAccess if using
 	CRLs or OSCP repectfully.
 
 </t>
-</section> 
+</section>
 <section anchor="Intermediate8021ARCert" title="Create the 802.1AR Intermediate Certificate">
 <t>
-	Here are the openssl commands to create the 802.1AR Intermediate 
-	certificate keypair, 802.1AR Intermediate certificate signed 
-	request (CSR), and the 802.1AR Intermediate certificate.  Included 
+	Here are the openssl commands to create the 802.1AR Intermediate
+	certificate keypair, 802.1AR Intermediate certificate signed
+	request (CSR), and the 802.1AR Intermediate certificate.  Included
 	are commands to view the file contents.
 </t>
-<figure> <artwork>
-
-# Create passworded keypair file
-
-openssl genpkey -aes256 -algorithm ec\
-    -pkeyopt ec_paramgen_curve:prime256v1 \
-    -outform $format -pkeyopt ec_param_enc:named_curve\
-    -out $dir/private/8021ARintermediate.key.$format
-chmod 400 $dir/private/8021ARintermediate.key.$format
-openssl pkey -inform $format\
-    -in $dir/private/8021ARintermediate.key.$format -text -noout
-
-# Create the CSR
-
-openssl req -config $cadir/openssl-root.cnf\
-    -key $dir/private/8021ARintermediate.key.$format \
-    -keyform $format -outform $format -subj "$DN" -new -sha256\
-    -out $dir/csr/8021ARintermediate.csr.$format
-openssl req -text -noout -verify -inform $format\
-    -in $dir/csr/8021ARintermediate.csr.$format
-
-
-# Create 802.1AR Intermediate Certificate file
-# The following does NOT work for DER
-
-openssl rand -hex $sn > $dir/serial # hex 8 is minimum, 19 is maximum
-# Note 'openssl ca' does not support DER format
-openssl ca -config $cadir/openssl-root.cnf -days 3650\
-    -extensions v3_intermediate_ca -notext -md sha256\
-    -in $dir/csr/8021ARintermediate.csr.$format\
-    -out $dir/certs/8021ARintermediate.cert.pem
-
-chmod 444 $dir/certs/8021ARintermediate.cert.$format
-
-openssl verify -CAfile $cadir/certs/ca.cert.$format\
-     $dir/certs/8021ARintermediate.cert.$format
-
-openssl x509 -noout -text\
-     -in $dir/certs/8021ARintermediate.cert.$format
-
-# Create the certificate chain file
-
-cat $dir/certs/8021ARintermediate.cert.$format\
-   $cadir/certs/ca.cert.$format > $dir/certs/ca-chain.cert.$format
-chmod 444 $dir/certs/ca-chain.cert.$format
-
-</artwork> </figure>
-</section> 
+<figure>
+INSERT_TEXT_FROM_FILE scripts/intermediate_1ar_cert.sh END
+</figure>
+</section>
 <section anchor="Cert8021AR" title="Create an 802.1AR iDevID Certificate">
 <t>
-	Here are the openssl commands to create a 802.1AR iDevID 
-	certificate keypair, iDevID certificate signed request (CSR), and 
-	the iDevID certificate.  Included are commands to view the file 
+	Here are the openssl commands to create a 802.1AR iDevID
+	certificate keypair, iDevID certificate signed request (CSR), and
+	the iDevID certificate.  Included are commands to view the file
 	contents.
 </t>
-<figure> <artwork>
-
-DevID=Wt1234
-countryName=
-stateOrProvinceName=
-localityName=
-organizationName="/O=HTT Consulting"
-organizationalUnitName="/OU=Devices"
-commonName=
-serialNumber="/serialNumber=$DevID"
-DN=$countryName$stateOrProvinceName$localityName
-DN=$DN$organizationName$organizationalUnitName$commonName
-DN=$DN$serialNumber
-echo $DN
-
-# hwType is OID for HTT Consulting, devices, sensor widgets
-export hwType=1.3.6.1.4.1.6715.10.1
-export hwSerialNum=01020304 # Some hex
-export subjectAltName="otherName:1.3.6.1.5.5.7.8.4;SEQ:hmodname"
-echo  $hwType - $hwSerialNum
-
-openssl genpkey -algorithm ec -pkeyopt ec_paramgen_curve:prime256v1\
-    -pkeyopt ec_param_enc:named_curve\
-    -out $dir/private/$DevID.key.$format
-chmod 400 $dir/private/$DevID.key.$format
-openssl pkey -in $dir/private/$DevID.key.$format -text -noout
-openssl req -config $dir/openssl-8021ARintermediate.cnf\
-    -key $dir/private/$DevID.key.$format \
-    -subj "$DN" -new -sha256 -out $dir/csr/$DevID.csr.$format
-
-openssl req -text -noout -verify\
-    -in $dir/csr/$DevID.csr.$format
-openssl asn1parse -i -in $dir/csr/$DevID.csr.pem
-# offset of start of hardwareModuleName and use that in place of 189
-openssl asn1parse -i -strparse 189 -in $dir/csr/$DevID.csr.pem
-
-openssl rand -hex $sn > $dir/serial # hex 8 is minimum, 19 is maximum
-# Note 'openssl ca' does not support DER format
-openssl ca -config $dir/openssl-8021ARintermediate.cnf -days 375\
-    -extensions 8021ar_idevid -notext -md sha256 \
-    -in $dir/csr/$DevID.csr.$format\
-    -out $dir/certs/$DevID.cert.$format
-chmod 444 $dir/certs/$DevID.cert.$format
-
-openssl verify -CAfile $dir/certs/ca-chain.cert.$format\
-     $dir/certs/$DevID.cert.$format
-openssl x509 -noout -text -in $dir/certs/$DevID.cert.$format
-openssl asn1parse -i -in $dir/certs/$DevID.cert.pem
-
-# offset of start of hardwareModuleName and use that in place of 493
-openssl asn1parse -i -strparse 493 -in $dir/certs/$DevID.cert.pem
-
-</artwork> </figure>
-</section> 
-</section> 
+<figure>
+INSERT_TEXT_FROM_FILE scripts/idevid-csr-cert.sh END
+</figure>
+</section>
+</section>
 <section anchor="CRL" title="Setting up a CRL for an Intermediate CA">
 <t>
-	This part provides CRL support to an Intermediate CA.  In this memo 
-	it applies to both Intermediate CAs.  Set the crlDistributionPoints 
+	This part provides CRL support to an Intermediate CA.  In this memo
+	it applies to both Intermediate CAs.  Set the crlDistributionPoints
 	as provided via the environment variables.
 </t>
 <section anchor="createCRL" title="Create (or recreate) the CRL">
 <t>
-	It is simple to create the CRL.  The CRL consists of the 
+	It is simple to create the CRL.  The CRL consists of the
 	certificates flagged with an R (Revoked) in index.txt:
 </t>
-<figure> <artwork>
-
-# Select which Intermediate level
-intermediate=intermediate
-#intermediate=8021ARintermediate
-dir=$cadir/$intermediate
-crl=$intermediate.crl.pem
-
-# Create CRL file
-openssl ca -config $dir/openssl-$intermediate.cnf \
-      -gencrl -out $dir/crl/$crl
-chmod 444 $dir/crl/$crl
-
-openssl crl -in $dir/crl/$crl -noout -text
-
-</artwork> </figure>
-</section> 
+<figure>
+INSERT_TEXT_FROM_FILE scripts/crl-creation.sh END
+</figure>
+</section>
 <section anchor="RevokeCert" title="Revoke a Certificate">
 <t>
-	Revoking a certificate is a two step process.  First identify the 
-	target certificate, examples are listed below.  Revoke it then 
+	Revoking a certificate is a two step process.  First identify the
+	target certificate, examples are listed below.  Revoke it then
 	publish a new CRL.
 </t>
-<figure> <artwork>
-
-targetcert=fqdn
-#targetcert=clientemail
-#targetcert=DevID
-
-openssl ca -config $dir/openssl-$intermediate.cnf\
- -revoke $dir/certs/$targetcert.cert.$format
-
-</artwork> </figure>
+<figure>
+INSERT_TEXT_FROM_FILE scripts/revoke-step1.sh END
+</figure>
 <t>
 	Recreate the CRL using <xref target="createCRL" />.
 </t>
-</section> 
-</section> 
+</section>
+</section>
 <section anchor="OCSP" title="Setting up OCSP for an Intermediate CA">
 <t>
-	This part provides OCSP support to an Intermediate CA.  In this 
-	memo it applies to both Intermediate CAs.  Set the 
+	This part provides OCSP support to an Intermediate CA.  In this
+	memo it applies to both Intermediate CAs.  Set the
 	authorityInfoAccess as provided via the environment variables.
 </t>
 <section anchor="createOCSP" title="Create the OCSP Certificate">
 <t>
-	OCSP needs a signing certificate.  This certificate must be signed 
-	by the CA that signed the certificate being checked.  The steps to 
-	create this certificate is the similar to a Server certificate for 
+	OCSP needs a signing certificate.  This certificate must be signed
+	by the CA that signed the certificate being checked.  The steps to
+	create this certificate is the similar to a Server certificate for
 	the CA:
 </t>
-<figure> <artwork>
-
-# Select which Intermediate level
-intermediate=intermediate
-#intermediate=8021ARintermediate
-# Optionally, password encrypt key pair
-encryptkey=
-#encryptkey=-aes256
-
-# Create the key pair in Intermediate level $intermediate
-cd $dir
-openssl genpkey -algorithm ec -pkeyopt ec_paramgen_curve:prime256v1\
-    $encryptkey -pkeyopt ec_param_enc:named_curve\
-    -out $dir/private/$ocspurl.key.$format
-chmod 400 $dir/private/$ocspurl.$format
-openssl pkey -in $dir/private/$ocspurl.key.$format -text -noout
-
-# Create CSR
-commonName=
-DN=$countryName$stateOrProvinceName$localityName
-DN=$DN$organizationName$organizationalUnitName$commonName
-echo $DN
-emailaddr=postmaster@htt-consult.com
-export subjectAltName="DNS:$ocspurl, email:$emailaddr"
-echo $subjectAltName
-openssl req -config $dir/openssl-$intermediate.cnf\
-    -key $dir/private/$ocspurl.key.$format \
-    -subj "$DN" -new -sha256 -out $dir/csr/$ocspurl.csr.$format
-
-openssl req -text -noout -verify -in $dir/csr/$ocspurl.csr.$format
-
-# Create Certificate
-
-openssl rand -hex $sn > $dir/serial # hex 8 is minimum, 19 is maximum
-# Note 'openssl ca' does not support DER format
-openssl ca -config $dir/openssl-$intermediate.cnf -days 375\
-    -extensions ocsp -notext -md sha256 \
-    -in $dir/csr/$ocspurl.csr.$format\
-    -out $dir/certs/$ocspurl.cert.$format
-chmod 444 $dir/certs/$ocspurl.cert.$format
-
-openssl verify -CAfile $dir/certs/ca-chain.cert.$format\
-     $dir/certs/$ocspurl.cert.$format
-openssl x509 -noout -text -in $dir/certs/$ocspurl.cert.$format
-
-</artwork> </figure>
-</section> 
+<figure>
+INSERT_TEXT_FROM_FILE scripts/ocsp-setup.sh END
+</figure>
+</section>
 <section anchor="RevokeCertOCSP" title="Revoke a Certificate">
 <t>
-	Revoke the certificate as in <xref target="RevokeCert" />.  The 
-	OCSP responder SHOULD detect the flag change in index.txt and, when 
+	Revoke the certificate as in <xref target="RevokeCert" />.  The
+	OCSP responder SHOULD detect the flag change in index.txt and, when
 	queried respond appropriately.
 </t>
-</section> 
+</section>
 <section anchor="TestingOCSP" title="Testing OCSP with Openssl">
 <t>
-	OpenSSL provides a simple OCSP service that can be used to test the 
-	OCSP certificate and revocation process (Note that this only reads 
+	OpenSSL provides a simple OCSP service that can be used to test the
+	OCSP certificate and revocation process (Note that this only reads
 	the index.txt to get the certificate status at startup).
 </t>
 <t>
-	In a terminal window, set variables dir and ocspurl (examples 
+	In a terminal window, set variables dir and ocspurl (examples
 	below), then run the simple OCSP service:
 </t>
-<figure> <artwork>
-
-dir=/root/ca/intermediate
-ocspurl=ocsp.htt-consult.com
-
-openssl ocsp -port 2560 -text -rmd sha256\
-      -index $dir/index.txt \
-      -CA $dir/certs/ca-chain.cert.pem \
-      -rkey $dir/private/$ocspurl.key.pem \
-      -rsigner $dir/certs/$ocspurl.cert.pem \
-      -nrequest 1
-
-</artwork> </figure>
+<figure>
+INSERT_TEXT_FROM_FILE scripts/run-ocsp-server.sh END
+</figure>
 <t>
 	In another window, test out a certificate status with:
 </t>
-<figure> <artwork>
-
-targetcert=fqdn
-#targetcert=clientemail
-#targetcert=DevID
-
-openssl ocsp -CAfile $dir/certs/ca-chain.cert.pem \
-      -url http://127.0.0.1:2560 -resp_text -sha256\
-      -issuer $dir/certs/$intermediate.cert.pem \
-      -cert $dir/certs/$targetcert.cert.pem
-
-</artwork> </figure>
+<figure>
+INSERT_TEXT_FROM_FILE scripts/test-ocsp-server.sh END
+</figure>
 <t>
-	Revoke the certificate, <xref target="RevokeCert" />, restart the 
+	Revoke the certificate, <xref target="RevokeCert" />, restart the
 	test Responder again as above, then check the certificate status.
 </t>
-</section> 
-</section> 
+</section>
+</section>
 <section anchor="Footnotes" title="Footnotes">
 <t>
-	Creating this document was a real education in the state of 
-	openSSL, X.509 certificate guidance, and just general level of 
+	Creating this document was a real education in the state of
+	openSSL, X.509 certificate guidance, and just general level of
 	certificate awareness.  Here are a few short notes.
-</t> 
+</t>
 <section anchor="SerNum" title="Certificate Serial Number">
 <t>
-	The certificate serial number's role is to provide yet another way 
-	to maintain uniqueness of certificates within a pki as well as a 
-	way to index them in a data store.  It has taken on other roles, 
+	The certificate serial number's role is to provide yet another way
+	to maintain uniqueness of certificates within a pki as well as a
+	way to index them in a data store.  It has taken on other roles,
 	most notably as a defense.
 </t>
 <t>
-	The CABForum guideline for a public CA is for the serial number to 
-	be a random number at least 8 octets long and no longer than 20 
-	bytes. By default, openssl makes self-signed certificates with 8 
-	octet serial numbers.  This guide uses openssl's RAND function to 
-	generate the random value and pipe it into the -set_serial option. 
-	This number MAY have the first bit as a ONE; the DER encoding rules 
-	prepend such numbers with 0x00.  Thus the limit of '19' for the 
+	The CABForum guideline for a public CA is for the serial number to
+	be a random number at least 8 octets long and no longer than 20
+	bytes. By default, openssl makes self-signed certificates with 8
+	octet serial numbers.  This guide uses openssl's RAND function to
+	generate the random value and pipe it into the -set_serial option.
+	This number MAY have the first bit as a ONE; the DER encoding rules
+	prepend such numbers with 0x00.  Thus the limit of '19' for the
 	variable 'ns'.
 </t>
 <t>
-	A private CA need not follow the CABForum rules and can use 
-	anything number for the serial number.  For example, the root CA 
-	(which has no security risks mitigated by using a random value) 
-	could use '1' as its serial number.  Intermediate and End Entity 
-	certificate serial numbers can also be of any value if a strong 
-	hash, like SHA256 used here.  A value of 4 for ns would provide a 
-	sufficient population so that a CA of 10,000 EE certificates will 
-	have only a 1.2% probability of a collision.  For only 1,000 
+	A private CA need not follow the CABForum rules and can use
+	anything number for the serial number.  For example, the root CA
+	(which has no security risks mitigated by using a random value)
+	could use '1' as its serial number.  Intermediate and End Entity
+	certificate serial numbers can also be of any value if a strong
+	hash, like SHA256 used here.  A value of 4 for ns would provide a
+	sufficient population so that a CA of 10,000 EE certificates will
+	have only a 1.2% probability of a collision.  For only 1,000
 	certificates the probability drops to 0.012%.
 </t>
 <t>
-	The following was proposed on the openssl-user list as an 
+	The following was proposed on the openssl-user list as an
 	alternative to using the RAND function:
 </t>
 <t>
-	Keep k bits (k/8 octets) long serial numbers for all your 
-	certificates, chose a block cipher operating on blocks of k bits, 
-	and operate this block cipher in CTR mode, with a proper secret key 
-	and secret starting counter. That way, no collision detection is 
-	necessary, you’ll be able to generate 2^(k/2) unique k bits longs 
-	serial numbers (in fact, you can generate 2^k unique serial 
+	Keep k bits (k/8 octets) long serial numbers for all your
+	certificates, chose a block cipher operating on blocks of k bits,
+	and operate this block cipher in CTR mode, with a proper secret key
+	and secret starting counter. That way, no collision detection is
+	necessary, you’ll be able to generate 2^(k/2) unique k bits longs
+	serial numbers (in fact, you can generate 2^k unique serial
 	numbers, but after 2^(k/2) you lose some security guarantees).
 </t>
 <t>
@@ -828,59 +469,53 @@ openssl ocsp -CAfile $dir/certs/ca-chain.cert.pem \
 </section>
 <section anchor="Config" title="Some OpenSSL config file limitations">
 <t>
-	There is a bit of inconsistency in how different parts and fields 
-	in the config file are used.  Environment variables can only be 
-	used as values.  Some fields can have null values, others cannot. 
-	The lack of allowing null fields means a script cannot feed in an 
-	environment variable with value null.  In such a case, the field 
+	There is a bit of inconsistency in how different parts and fields
+	in the config file are used.  Environment variables can only be
+	used as values.  Some fields can have null values, others cannot.
+	The lack of allowing null fields means a script cannot feed in an
+	environment variable with value null.  In such a case, the field
 	has to be removed from the config file.
-</t> 
+</t>
 <t>
-	The expectation is each CA within a PKI has its own config file, 
+	The expectation is each CA within a PKI has its own config file,
 	customized to the certificates supported by that CA.
-</t> 
+</t>
 </section>
 <section anchor="SAN" title="subjectAltName support, or lack thereof">
 <t>
-	There is no direct openssl command line option to provide a 
-	subjectAltName for a certificate.  This is a serious limitation. 
-	Per <xref target="RFC2818">RFC 2818</xref> SAN is the object for 
-	providing email addresses and DNS addresses (FQDN), yet the common 
-	practice has been to use the commonName object within the 
-	distinguishedName object.  How much of this is due to the 
+	There is no direct openssl command line option to provide a
+	subjectAltName for a certificate.  This is a serious limitation.
+	Per <xref target="RFC2818">RFC 2818</xref> SAN is the object for
+	providing email addresses and DNS addresses (FQDN), yet the common
+	practice has been to use the commonName object within the
+	distinguishedName object.  How much of this is due to the
 	difficulty in creating certificates with a SAN?
-</t> 
+</t>
 <t>
-	Thus the only way to provide a SAN is through the config file.  And 
-	there are two approaches.  This document uses an environment 
-	variable to provide the SAN value into the config file.  Another 
+	Thus the only way to provide a SAN is through the config file.  And
+	there are two approaches.  This document uses an environment
+	variable to provide the SAN value into the config file.  Another
 	approach is to use piping as in:
-<figure> <artwork><![CDATA[
-
-openssl req -new -sha256 -key domain.key\
- -subj "/C=US/ST=CA/O=Acme, Inc./CN=foo.com" -reqexts SAN\
-  -config <(cat /etc/ssl/openssl.cnf\
-   <(printf "[SAN]\nsubjectAltName=DNS:foo.com,DNS:www.foo.com"))\
-  -out domain.csr 
-
-]]></artwork> </figure>
-</t> 
+<figure>
+INSERT_TEXT_FROM_FILE scripts/san-creation-pipe.sh END
+</figure>
+</t>
 </section>
 <section anchor="DER" title="DER support, or lack thereof">
 <t>
-	The long, hard-fought battle with openssl to create a full DER pki 
-	failed.  The is no facility to create a DER certificate from a DER 
-	CSR.  It just is not there in the 'openssl ca' command.  Even the 
+	The long, hard-fought battle with openssl to create a full DER pki
+	failed.  The is no facility to create a DER certificate from a DER
+	CSR.  It just is not there in the 'openssl ca' command.  Even the
 	'openssl x509 -req' command cannot do this for a simple certificate.
-</t> 
+</t>
 <t>
-	Further, there is no 'hack' for making a certificate chain as there 
-	is with PEM.  With PEM a simple concatenation of the certificates 
-	create a usable certificate chain.  For DER, some recommend using 
-	<xref target="RFC2315">PKCS#7</xref>, where others point out that 
-	this format is poorly support 'in the field', whereas <xref 
+	Further, there is no 'hack' for making a certificate chain as there
+	is with PEM.  With PEM a simple concatenation of the certificates
+	create a usable certificate chain.  For DER, some recommend using
+	<xref target="RFC2315">PKCS#7</xref>, where others point out that
+	this format is poorly support 'in the field', whereas <xref
 	target="RFC7292">PKCS#12</xref> works for them.
-</t> 
+</t>
 <t>
 	Finally, openssl does supports converting a PEM certificate to DER:
 <figure> <artwork><![CDATA[
@@ -888,10 +523,10 @@ openssl req -new -sha256 -key domain.key\
 openssl x509 -outform der -in certificate.pem -out certificate.der
 
 ]]></artwork> </figure>
-	This should also work for the keypair.  However, in a highly 
-	constrained device it may make more sense to just store the raw 
+	This should also work for the keypair.  However, in a highly
+	constrained device it may make more sense to just store the raw
 	keypair in the device's very limited secure storage.
-</t> 
+</t>
 </section>
 </section>
 <section anchor="IANA" title="IANA Considerations">
@@ -902,26 +537,26 @@ openssl x509 -outform der -in certificate.pem -out certificate.der
 <section title="Security Considerations">
 <section anchor="Randomness" title="Adequate Randomness">
 <t>
-	Creating certificates takes a lot of random numbers.  A good source 
-	of random numbers is critical.  <xref 
-	target="WeakKeys">Studies</xref> have found excessive amount of 
-	certificates, all with the same keys due to bad randomness on the 
-	generating systems.  The amount of entropy available for these 
-	random numbers can be tested.  On Fedora/Centos use:
+	Creating certificates takes a lot of random numbers.  A good source
+	of random numbers is critical.  <xref
+	target="WeakKeys">Studies</xref> have found excessive amount of
+	certificates, all with the same keys due to bad randomness on the
+	generating systems.  The amount of entropy available for these
+	random numbers can be tested.  On Fedora/Centos and most Linux systems use:
 <figure> <artwork><![CDATA[
 cat /proc/sys/kernel/random/entropy_avail
 ]]></artwork> </figure>
 </t>
 <t>
-	If the value is low (below 1000) check your system's randomness 
-	source.  Is rng-tools installed?  Consider adding an entropy 
+	If the value is low (below 1000) check your system's randomness
+	source.  Is rng-tools installed?  Consider adding an entropy
 	collection service like haveged from issihosts.com/haveged.
 </t>
 </section>
 <section anchor="Theft" title="Key pair Theft">
 <t>
-	During the certificate creation, particularly during keypair 
-	generation, the files are vulnerable to theft.  This can be 
+	During the certificate creation, particularly during keypair
+	generation, the files are vulnerable to theft.  This can be
 	mitigate using umask.  Before using openssl, set umask:
 <figure> <artwork><![CDATA[
 restore_mask=$(umask -p)
@@ -931,25 +566,48 @@ umask 077
 <figure> <artwork><![CDATA[
 $restore_mask
 ]]></artwork> </figure>
+or just close the shell that was used, and start a new one.  (The -p option to umask is a bash-ism)
+</t>
+<t>
+There is nothing in these recipes that requires super-user on the system creating the
+certificates.  Provided that adequate randomness is available, a virtual machine or container
+is entirely appropriate.  Containers tend to have better access to randomness than virtual
+machines.
+</t>
+<t>
+The scripts and configuration files and in particular, private keys, may be kept offline
+on a USB key for instance, and loaded when needed.
+</t>
+<t>
+The OCSP server needs to be online and available to all clients that will use the
+certificates. This may mean available on the Internet.  A firewall can protect the
+OCSP server, and port-forwards and/or ACL rules can restrict access to just the OCSP port.
+OCSP artifacts are signed by a key designed for that purpose only so do not require that
+the associated CA key be available online.
+</t>
+<t>
+Generating new CRLs, however, requires that the CA signing key be online, which is one of
+the reasons for creating an intermediate CA.
 </t>
 </section>
+
 </section>
 <section title="Acknowledgments">
 <t>
-	This work was jump started by the excellent RSA pki guide by Jamie 
-	Nguyen.  The openssl-user mailing list, with its many supportive 
-	experts; in particular:  Rich Salz, Jakob Bolm, Viktor Dukhovni, 
-	and Erwann Abalea, was of immense help as was the openssl man pages 
+	This work was jump started by the excellent RSA pki guide by Jamie
+	Nguyen.  The openssl-user mailing list, with its many supportive
+	experts; in particular:  Rich Salz, Jakob Bolm, Viktor Dukhovni,
+	and Erwann Abalea, was of immense help as was the openssl man pages
 	website.
 </t>
 <t>
-	Finally, "Professor Google" was always ready to point to answers to 
-	questions like: "openssl subjectAltName on the command line".  And 
-	the Professor, it seems, never tires of answering even trivial 
+	Finally, "Professor Google" was always ready to point to answers to
+	questions like: "openssl subjectAltName on the command line".  And
+	the Professor, it seems, never tires of answering even trivial
 	questions.
 </t>
 </section>
-  
+
 </middle>
 <back>
 <references title="Normative References">
@@ -963,462 +621,58 @@ $restore_mask
 <reference anchor="WeakKeys" target="https://www.usenix.org/system/files/conference/usenixsecurity12/sec12-final228.pdf">
   <front>
     <title>Detection of Widespread Weak Keys in Network Devices</title>
-<author fullname="Nadia Heninger" initials="N.H." surname="Heninger"> 
+<author fullname="Nadia Heninger" initials="N.H." surname="Heninger">
 	<organization>University of California, San Diego</organization>
-	<address/> 
-</author> 
-<author fullname="Zakir Durumeric" initials="Z.D." surname="Durumeric"> 
+	<address/>
+</author>
+<author fullname="Zakir Durumeric" initials="Z.D." surname="Durumeric">
 	<organization>The University of Michigan</organization>
-	<address/> 
-</author> 
-<author fullname="Eric Wustrow" initials="E.W." surname="Wustrow"> 
+	<address/>
+</author>
+<author fullname="Eric Wustrow" initials="E.W." surname="Wustrow">
 	<organization>The University of Michigan</organization>
-	<address/> 
-</author> 
-<author fullname="J. Alex Halderman" initials="J.A.H." surname="Halderman"> 
+	<address/>
+</author>
+<author fullname="J. Alex Halderman" initials="J.A.H." surname="Halderman">
 	<organization>The University of Michigan</organization>
-	<address/> 
-</author> 
+	<address/>
+</author>
 <date month="July" year="2011"/>
 </front>
 </reference>
-</references>   
+</references>
 <section anchor="config" title="OpenSSL config files">
 <section anchor="Rootconfig" title="OpenSSL Root config file">
 <t>
 	The following is the openssl-root.cnf file contents
-</t> 
-<figure> <artwork><![CDATA[
-
-# OpenSSL root CA configuration file.
-# Copy to `$dir/openssl.cnf`.
-
-[ ca ]
-# `man ca`
-default_ca = CA_default
-
-[ CA_default ]
-# Directory and file locations.
-dir               = $ENV::dir
-cadir             = $ENV::cadir
-format            = $ENV::format
-
-certs             = $dir/certs
-crl_dir           = $dir/crl
-new_certs_dir     = $dir/newcerts
-database          = $dir/index.txt
-serial            = $dir/serial
-RANDFILE          = $dir/private/.rand
-
-# The root key and root certificate.
-private_key       = $cadir/private/ca.key.$format
-certificate       = $cadir/certs/ca.cert.$format
-
-# For certificate revocation lists.
-crlnumber         = $dir/crlnumber
-crl               = $dir/crl/ca.crl.pem
-crl_extensions    = crl_ext
-default_crl_days  = 30
-
-# SHA-1 is deprecated, so use SHA-2 instead.
-default_md        = sha256
-
-name_opt          = ca_default
-cert_opt          = ca_default
-default_days      = 375
-preserve          = no
-policy            = policy_strict
-copy_extensions   = copy
-
-[ policy_strict ]
-# The root CA should only sign intermediate certificates that match.
-# See the POLICY FORMAT section of `man ca`.
-countryName             = match
-stateOrProvinceName     = match
-organizationName        = match
-organizationalUnitName  = optional
-commonName              = optional
-
-[ policy_loose ]
-# Allow the intermediate CA to sign a more
-#   diverse range of certificates.
-# See the POLICY FORMAT section of the `ca` man page.
-countryName             = optional
-stateOrProvinceName     = optional
-localityName            = optional
-organizationName        = optional
-organizationalUnitName  = optional
-commonName              = optional
-
-[ req ]
-# Options for the `req` tool (`man req`).
-default_bits        = 2048
-distinguished_name  = req_distinguished_name
-string_mask         = utf8only
-req_extensions      = req_ext
-
-# SHA-1 is deprecated, so use SHA-2 instead.
-default_md          = sha256
-
-# Extension to add when the -x509 option is used.
-x509_extensions     = v3_ca
-
-[ req_distinguished_name ]
-# See <https://en.wikipedia.org/wiki/Certificate_signing_request>.
-countryName                     = Country Name (2 letter code)
-stateOrProvinceName             = State or Province Name
-localityName                    = Locality Name
-0.organizationName              = Organization Name
-organizationalUnitName          = Organizational Unit Name
-commonName                      = Common Name
-
-# Optionally, specify some defaults.
-# countryName_default             = US
-# stateOrProvinceName_default     = MI
-# localityName_default            = Oak Park
-# 0.organizationName_default      = HTT Consulting
-# organizationalUnitName_default  =
-
-[ req_ext ]
-subjectAltName = $ENV::subjectAltName
-
-[ v3_ca ]
-# Extensions for a typical CA (`man x509v3_config`).
-subjectKeyIdentifier = hash
-authorityKeyIdentifier = keyid:always,issuer
-basicConstraints = critical, CA:true
-# keyUsage = critical, digitalSignature, cRLSign, keyCertSign
-keyUsage = critical, cRLSign, keyCertSign
-subjectAltName = $ENV::subjectAltName
-
-[ v3_intermediate_ca ]
-# Extensions for a typical intermediate CA (`man x509v3_config`).
-subjectKeyIdentifier = hash
-authorityKeyIdentifier = keyid:always,issuer
-basicConstraints = critical, CA:true, pathlen:0
-# keyUsage = critical, digitalSignature, cRLSign, keyCertSign
-keyUsage = critical, cRLSign, keyCertSign
-
-[ crl_ext ]
-# Extension for CRLs (`man x509v3_config`).
-authorityKeyIdentifier=keyid:always
-
-[ ocsp ]
-# Extension for OCSP signing certificates (`man ocsp`).
-basicConstraints = CA:FALSE
-subjectKeyIdentifier = hash
-authorityKeyIdentifier = keyid,issuer
-keyUsage = critical, digitalSignature
-extendedKeyUsage = critical, OCSPSigning
-
-]]></artwork> </figure>
+</t>
+<figure>
+INSERT_TEXT_FROM_FILE configs/openssl-root.cnf END
+</figure>
 </section>
 <section anchor="Intermediateconfig" title="OpenSSL Intermediate config file">
 <t>
 	The following is the openssl-intermediate.cnf file contents.
-</t> 
+</t>
 <t>
-	Remove the crlDistributionPoints to drop CRL support and 
+	Remove the crlDistributionPoints to drop CRL support and
 	authorityInfoAccess to drop OCSP support.
-</t> 
-<figure> <artwork><![CDATA[
-
-# OpenSSL intermediate CA configuration file.
-# Copy to `$dir/intermediate/openssl-intermediate.cnf`.
-
-[ ca ]
-# `man ca`
-default_ca = CA_default
-
-[ CA_default ]
-# Directory and file locations.
-dir               = $ENV::dir
-cadir             = $ENV::cadir
-format            = $ENV::format
-
-certs             = $dir/certs
-crl_dir           = $dir/crl
-new_certs_dir     = $dir/newcerts
-database          = $dir/index.txt
-serial            = $dir/serial
-RANDFILE          = $dir/private/.rand
-
-# The Intermediate key and Intermediate certificate.
-private_key       = $dir/private/intermediate.key.$format
-certificate       = $dir/certs/intermediate.cert.$format
-
-# For certificate revocation lists.
-crlnumber         = $dir/crlnumber
-crl               = $dir/crl/intermediate.crl.pem
-crl_extensions    = crl_ext
-default_crl_days  = $ENV::default_crl_days
-
-# SHA-1 is deprecated, so use SHA-2 instead.
-default_md        = sha256
-
-name_opt          = ca_default
-cert_opt          = ca_default
-default_days      = 375
-preserve          = no
-policy            = policy_loose
-copy_extensions   = copy
-
-[ policy_strict ]
-# The root CA should only sign intermediate certificates that match.
-# See the POLICY FORMAT section of `man ca`.
-countryName             = match
-stateOrProvinceName     = match
-organizationName        = match
-organizationalUnitName  = optional
-commonName              = optional
-
-[ policy_loose ]
-# Allow the intermediate CA to sign a more 
-#  diverse range of certificates.
-# See the POLICY FORMAT section of the `ca` man page.
-countryName             = optional
-stateOrProvinceName     = optional
-localityName            = optional
-organizationName        = optional
-organizationalUnitName  = optional
-commonName              = optional
-UID                     = optional
-
-[ req ]
-# Options for the `req` tool (`man req`).
-default_bits        = 2048
-distinguished_name  = req_distinguished_name
-string_mask         = utf8only
-req_extensions      = req_ext
-
-# SHA-1 is deprecated, so use SHA-2 instead.
-default_md          = sha256
-
-# Extension to add when the -x509 option is used.
-x509_extensions     = v3_ca
-
-[ req_distinguished_name ]
-# See <https://en.wikipedia.org/wiki/Certificate_signing_request>.
-countryName                     = Country Name (2 letter code)
-stateOrProvinceName             = State or Province Name
-localityName                    = Locality Name
-0.organizationName              = Organization Name
-organizationalUnitName          = Organizational Unit Name
-commonName                      = Common Name
-UID                             = User ID
-
-# Optionally, specify some defaults.
-# countryName_default             = US
-# stateOrProvinceName_default     = MI
-# localityName_default            = Oak Park
-# 0.organizationName_default      = HTT Consulting
-# organizationalUnitName_default  =
-
-[ req_ext ]
-subjectAltName = $ENV::subjectAltName
-
-[ v3_ca ]
-# Extensions for a typical CA (`man x509v3_config`).
-subjectKeyIdentifier = hash
-authorityKeyIdentifier = keyid:always,issuer
-basicConstraints = critical, CA:true
-# keyUsage = critical, digitalSignature, cRLSign, keyCertSign
-keyUsage = critical, cRLSign, keyCertSign
-
-[ v3_intermediate_ca ]
-# Extensions for a typical intermediate CA (`man x509v3_config`).
-subjectKeyIdentifier = hash
-authorityKeyIdentifier = keyid:always,issuer
-basicConstraints = critical, CA:true, pathlen:0
-# keyUsage = critical, digitalSignature, cRLSign, keyCertSign
-keyUsage = critical, cRLSign, keyCertSign
-
-[ usr_cert ]
-# Extensions for client certificates (`man x509v3_config`).
-basicConstraints = CA:FALSE
-nsCertType = client, email
-nsComment = "OpenSSL Generated Client Certificate"
-subjectKeyIdentifier = hash
-authorityKeyIdentifier = keyid,issuer
-keyUsage = critical,nonRepudiation,digitalSignature,keyEncipherment
-extendedKeyUsage = clientAuth, emailProtection
-# uncomment the following if the ENV variables set
-# crlDistributionPoints = $ENV::crlDP
-# authorityInfoAccess = $ENV::ocspIAI
-
-[ server_cert ]
-# Extensions for server certificates (`man x509v3_config`).
-basicConstraints = CA:FALSE
-nsCertType = server
-nsComment = "OpenSSL Generated Server Certificate"
-subjectKeyIdentifier = hash
-authorityKeyIdentifier = keyid,issuer:always
-keyUsage = critical, digitalSignature, keyEncipherment
-extendedKeyUsage = serverAuth
-# uncomment the following if the ENV variables set
-# crlDistributionPoints = $ENV::crlDP
-# authorityInfoAccess = $ENV::ocspIAI
-
-[ crl_ext ]
-# Extension for CRLs (`man x509v3_config`).
-authorityKeyIdentifier=keyid:always
-
-[ ocsp ]
-# Extension for OCSP signing certificates (`man ocsp`).
-basicConstraints = CA:FALSE
-subjectKeyIdentifier = hash
-authorityKeyIdentifier = keyid,issuer
-keyUsage = critical, digitalSignature
-extendedKeyUsage = critical, OCSPSigning
-
-]]></artwork> </figure>
+</t>
+<figure>
+INSERT_TEXT_FROM_FILE configs/openssl-intermediate.cnf END
+</figure>
 </section>
 <section anchor="Intermediate8021ARconfig" title="OpenSSL 802.1AR Intermediate config file">
 <t>
 	The following is the openssl-8021ARintermediate.cnf file contents.
-</t> 
+</t>
 <t>
-	Remove the crlDistributionPoints to drop CRL support and 
+	Remove the crlDistributionPoints to drop CRL support and
 	authorityInfoAccess to drop OCSP support.
-</t> 
-<figure> <artwork><![CDATA[
-
-# OpenSSL 8021ARintermediate CA configuration file.
-# Copy to `$dir/8021ARintermediate/openssl-8021ARintermediate.cnf`.
-
-[ ca ]
-# `man ca`
-default_ca = CA_default
-
-[ CA_default ]
-# Directory and file locations.
-# dir               = /root/ca/8021ARintermediate
-dir               = $ENV::dir
-cadir             = $ENV::cadir
-format            = $ENV::format
-
-certs             = $dir/certs
-crl_dir           = $dir/crl
-new_certs_dir     = $dir/newcerts
-database          = $dir/index.txt
-serial            = $dir/serial
-RANDFILE          = $dir/private/.rand
-
-# The root key and root certificate.
-private_key       = $dir/private/8021ARintermediate.key.$format
-certificate       = $dir/certs/8021ARintermediate.cert.$format
-
-# For certificate revocation lists.
-crlnumber         = $dir/crlnumber
-crl               = $dir/crl/ca.crl.pem
-crl_extensions    = crl_ext
-default_crl_days  = $ENV::default_crl_days
-
-# SHA-1 is deprecated, so use SHA-2 instead.
-default_md        = sha256
-
-name_opt          = ca_default
-cert_opt          = ca_default
-default_enddate   = 99991231235959Z # per IEEE 802.1AR
-preserve          = no
-policy            = policy_loose
-copy_extensions   = copy
-
-[ policy_strict ]
-# The root CA should only sign 8021ARintermediate
-#   certificates that match.
-# See the POLICY FORMAT section of `man ca`.
-countryName             = match
-stateOrProvinceName     = match
-organizationName        = match
-organizationalUnitName  = optional
-commonName              = optional
-
-[ policy_loose ]
-# Allow the 8021ARintermediate CA to sign
-#   a more diverse range of certificates.
-# See the POLICY FORMAT section of the `ca` man page.
-countryName             = optional
-stateOrProvinceName     = optional
-localityName            = optional
-organizationName        = optional
-organizationalUnitName  = optional
-commonName              = optional
-serialNumber            = optional
-
-[ req ]
-# Options for the `req` tool (`man req`).
-default_bits        = 2048
-distinguished_name  = req_distinguished_name
-string_mask         = utf8only
-req_extensions      = req_ext
-
-# SHA-1 is deprecated, so use SHA-2 instead.
-default_md          = sha256
-
-# Extension to add when the -x509 option is used.
-x509_extensions     = v3_ca
-
-[ req_distinguished_name ]
-# See <https://en.wikipedia.org/wiki/Certificate_signing_request>.
-countryName                     = Country Name (2 letter code)
-stateOrProvinceName             = State or Province Name
-localityName                    = Locality Name
-0.organizationName              = Organization Name
-organizationalUnitName          = Organizational Unit Name
-commonName                      = Common Name
-serialNumber                    = Device Serial Number
-
-# Optionally, specify some defaults.
-0.organizationName_default      = HTT Consulting
-organizationalUnitName_default  = Devices
-
-[ req_ext ]
-subjectAltName = $ENV::subjectAltName
-
-[ hmodname ]
-hwType = OID:$ENV::hwType
-hwSerialNum = FORMAT:HEX,OCT:$ENV::hwSerialNum
-
-[ v3_ca ]
-# Extensions for a typical CA (`man x509v3_config`).
-subjectKeyIdentifier = hash
-authorityKeyIdentifier = keyid:always,issuer
-basicConstraints = critical, CA:true
-keyUsage = critical, digitalSignature, cRLSign, keyCertSign
-
-[ v3_8021ARintermediate_ca ]
-# Extensions for a typical
-#   8021ARintermediate CA (`man x509v3_config`).
-subjectKeyIdentifier = hash
-authorityKeyIdentifier = keyid:always,issuer
-basicConstraints = critical, CA:true, pathlen:0
-# keyUsage = critical, digitalSignature, cRLSign, keyCertSign
-keyUsage = critical, cRLSign, keyCertSign
-
-[ 8021ar_idevid ]
-# Extensions for IEEE 802.1AR iDevID
-#   certificates (`man x509v3_config`).
-basicConstraints = CA:FALSE
-authorityKeyIdentifier = keyid,issuer:always
-keyUsage = critical, digitalSignature, keyEncipherment
-# uncomment the following if the ENV variables set
-# crlDistributionPoints = $ENV::crlDP
-# authorityInfoAccess = $ENV::ocspIAI
-
-[ crl_ext ]
-# Extension for CRLs (`man x509v3_config`).
-authorityKeyIdentifier=keyid:always
-
-[ ocsp ]
-# Extension for OCSP signing certificates (`man ocsp`).
-basicConstraints = CA:FALSE
-subjectKeyIdentifier = hash
-authorityKeyIdentifier = keyid,issuer
-keyUsage = critical, digitalSignature
-extendedKeyUsage = critical, OCSPSigning
-
-]]></artwork> </figure>
+</t>
+<figure>
+INSERT_TEXT_FROM_FILE configs/openssl-8021ARintermediate.cnf END
+</figure>
 </section>
 </section>
 </back>
