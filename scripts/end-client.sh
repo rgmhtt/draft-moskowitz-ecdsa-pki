@@ -5,7 +5,7 @@ if [ ! -f $dir/private/$clientemail.key.$format ]; then
 openssl genpkey -algorithm ec -pkeyopt ec_paramgen_curve:prime256v1\
     -pkeyopt ec_param_enc:named_curve\
     -out $dir/private/$clientemail.key.$format
-chmod 400 $dir/private/$clientemail.$format
+chmod 400 $dir/private/$clientemail.key.$format
 openssl pkey -in $dir/private/$clientemail.key.$format -text -noout
 fi
 
