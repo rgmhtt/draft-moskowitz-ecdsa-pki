@@ -1,12 +1,14 @@
 # Create passworded keypair file
 
+if [ ! -f $dir/private/ca.key.$format ]; then
 openssl genpkey -aes256 -algorithm ec\
     -pkeyopt ec_paramgen_curve:prime256v1\
     -outform $format -pkeyopt ec_param_enc:named_curve\
     -out $dir/private/ca.key.$format
 chmod 400 $dir/private/ca.key.$format
 openssl pkey -inform $format -in $dir/private/ca.key.$format\
-    -text -noout
+        -text -noout
+fi
 
 # Create Self-signed Root Certificate file
 # 7300 days = 20 years; Intermediate CA is 10 years.

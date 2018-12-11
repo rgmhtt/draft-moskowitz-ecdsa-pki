@@ -1,12 +1,14 @@
 # Create passworded keypair file
 
+if [ ! -f $dir/private/intermediate.key.$format ]; then
 openssl genpkey -aes256 -algorithm ec\
     -pkeyopt ec_paramgen_curve:prime256v1 \
     -outform $format -pkeyopt ec_param_enc:named_curve\
     -out $dir/private/intermediate.key.$format
 chmod 400 $dir/private/intermediate.key.$format
 openssl pkey -inform $format\
-    -in $dir/private/intermediate.key.$format -text -noout
+        -in $dir/private/intermediate.key.$format -text -noout
+fi
 
 # Create the CSR
 

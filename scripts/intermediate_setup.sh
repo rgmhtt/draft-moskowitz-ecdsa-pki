@@ -1,8 +1,8 @@
 
 export dir=$cadir/intermediate
-mkdir $dir
+mkdir -p $dir
 cd $dir
-mkdir certs crl csr newcerts private
+mkdir -p certs crl csr newcerts private
 chmod 700 private
 touch index.txt
 sn=8 # hex 8 is minimum, 19 is maximum

@@ -293,6 +293,7 @@ INSERT_TEXT_FROM_FILE scripts/end-server.sh END
 	the file contents.
 </t>
 <figure>
+INSERT_TEXT_FROM_FILE scripts/end-client-dn.sh END
 INSERT_TEXT_FROM_FILE scripts/end-client.sh END
 </figure>
 </section>

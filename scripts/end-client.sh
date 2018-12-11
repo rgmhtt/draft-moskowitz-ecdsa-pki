@@ -1,16 +1,14 @@
-commonName=
-UserID="/UID=rgm"
-DN=$countryName$stateOrProvinceName$localityName
-DN=$DN$organizationName$organizationalUnitName$commonName$UserID
-echo $DN
-clientemail=rgm@example.com
 export subjectAltName="email:$clientemail"
 echo $subjectAltName
+
+if [ ! -f $dir/private/$clientemail.key.$format ]; then
 openssl genpkey -algorithm ec -pkeyopt ec_paramgen_curve:prime256v1\
     -pkeyopt ec_param_enc:named_curve\
     -out $dir/private/$clientemail.key.$format
 chmod 400 $dir/private/$clientemail.$format
 openssl pkey -in $dir/private/$clientemail.key.$format -text -noout
+fi
+
 openssl req -config $dir/openssl-intermediate.cnf\
     -key $dir/private/$clientemail.key.$format \
     -subj "$DN" -new -sha256 -out $dir/csr/$clientemail.csr.$format
