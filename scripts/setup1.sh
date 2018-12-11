@@ -26,3 +26,5 @@ DN=$DN$organizationName$organizationalUnitName$commonName
 
 echo $DN
 export subjectAltName=email:postmaster@htt-consult.com
+
+export default_crl_days=2048
