@@ -294,6 +294,8 @@ INSERT_TEXT_FROM_FILE scripts/end-server.sh END
 </t>
 <figure>
 INSERT_TEXT_FROM_FILE scripts/end-client-dn.sh END
+</figure>
+<figure>
 INSERT_TEXT_FROM_FILE scripts/end-client.sh END
 </figure>
 </section>
