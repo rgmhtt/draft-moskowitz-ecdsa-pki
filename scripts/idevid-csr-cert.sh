@@ -18,12 +18,15 @@ export hwSerialNum=01020304 # Some hex
 export subjectAltName="otherName:1.3.6.1.5.5.7.8.4;SEQ:hmodname"
 echo  $hwType - $hwSerialNum
 
-openssl genpkey -algorithm ec -pkeyopt ec_paramgen_curve:prime256v1\
-    -pkeyopt ec_param_enc:named_curve\
-    -out $dir/private/$DevID.key.$format
-chmod 400 $dir/private/$DevID.key.$format
+if [ ! -f $dir/private/$DevID.key.$format ]; then
+    openssl genpkey -algorithm ec -pkeyopt ec_paramgen_curve:prime256v1\
+            -pkeyopt ec_param_enc:named_curve\
+            -out $dir/private/$DevID.key.$format
+    chmod 400 $dir/private/$DevID.key.$format
+fi
+
 openssl pkey -in $dir/private/$DevID.key.$format -text -noout
-openssl req -config $dir/openssl-8021ARintermediate.cnf\
+openssl req -config $cfgdir/openssl-8021ARintermediate.cnf\
     -key $dir/private/$DevID.key.$format \
     -subj "$DN" -new -sha256 -out $dir/csr/$DevID.csr.$format
 
@@ -35,7 +38,7 @@ openssl asn1parse -i -strparse 189 -in $dir/csr/$DevID.csr.pem
 
 openssl rand -hex $sn > $dir/serial # hex 8 is minimum, 19 is maximum
 # Note 'openssl ca' does not support DER format
-openssl ca -config $dir/openssl-8021ARintermediate.cnf -days 375\
+openssl ca -config $cfgdir/openssl-8021ARintermediate.cnf -days 375\
     -extensions 8021ar_idevid -notext -md sha256 \
     -in $dir/csr/$DevID.csr.$format\
     -out $dir/certs/$DevID.cert.$format

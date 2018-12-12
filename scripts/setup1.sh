@@ -1,14 +1,16 @@
 # edit directory here
 export dir=/root/ca
 export cadir=/root/ca
-
+export cfgdir=../configs
 export format=pem
+export default_crl_days=65
+
 mkdir -p $dir
-cd $dir
-mkdir -p certs crl csr newcerts private
-chmod 700 private
-touch index.txt
-touch serial
+#cd $dir
+mkdir -p $dir/certs $dir/crl $dir/csr $dir/newcerts $dir/private
+chmod 700 $dir/private
+touch $dir/index.txt
+touch $dir/serial
 sn=8
 
 # edit these to suit
