@@ -2,7 +2,7 @@
 # edit directory here, or override
 export cadir=${cadir-/root/ca}
 export rootca=${cadir}/root
-export cfgdir=${cadir}
+export cfgdir=${cfgdir-$cadir}
 export intdir=${cadir}/intermediate
 export int1ardir=${cadir}/inter_1ar
 export format=pem
