@@ -23,13 +23,17 @@ openssl req -text -noout -verify -inform $format\
 # Create Intermediate Certificate file
 
 openssl rand -hex $sn > $dir/serial # hex 8 is minimum, 19 is maximum
-# Note 'openssl ca' does not support DER format
-openssl ca -config $cadir/openssl-root.cnf -days 3650\
-    -extensions v3_intermediate_ca -notext -md sha256 \
-    -in $dir/csr/intermediate.csr.$format\
-    -out $dir/certs/intermediate.cert.pem
 
-chmod 444 $dir/certs/intermediate.cert.$format
+if [ ! -f $dir/certs/intermediate.cert.pem ]; then
+    # Note 'openssl ca' does not support DER format
+    openssl ca -config $cadir/openssl-root.cnf -days 3650\
+            -extensions v3_intermediate_ca -notext -md sha256 \
+            -in $dir/csr/intermediate.csr.$format\
+            -out $dir/certs/intermediate.cert.pem
+    chmod 444 $dir/certs/intermediate.cert.$format
+    rm -f $dir/certs/ca-chain.cert.$format
+fi
+
 
 openssl verify -CAfile $cadir/certs/ca.cert.$format\
      $dir/certs/intermediate.cert.$format
@@ -38,6 +42,8 @@ openssl x509 -noout -text -in $dir/certs/intermediate.cert.$format
 
 # Create the certificate chain file
 
-cat $dir/certs/intermediate.cert.$format\
-   $cadir/certs/ca.cert.$format > $dir/certs/ca-chain.cert.$format
-chmod 444 $dir/certs/ca-chain.cert.$format
+if [ ! -f $dir/certs/ca-chain.cert.$format ]; then
+    cat $dir/certs/intermediate.cert.$format\
+        $cadir/certs/ca.cert.$format > $dir/certs/ca-chain.cert.$format
+    chmod 444 $dir/certs/ca-chain.cert.$format
+fi
