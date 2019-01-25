@@ -1,16 +1,22 @@
-# edit directory here
-export dir=/root/ca
-export cadir=/root/ca
-export cfgdir=../configs
+
+# edit directory here, or override
+export cadir=${cadir-/root/ca}
+export rootca=${cadir}/root
+export cfgdir=${cadir}
+export intdir=${cadir}/intermediate
+export int1ardir=${cadir}/inter_1ar
 export format=pem
 export default_crl_days=65
 
-mkdir -p $dir
-#cd $dir
-mkdir -p $dir/certs $dir/crl $dir/csr $dir/newcerts $dir/private
-chmod 700 $dir/private
-touch $dir/index.txt
-touch $dir/serial
+mkdir -p $cadir/certs
+mkdir -p $rootca
+(cd $rootca
+mkdir -p certs crl csr newcerts private
+chmod 700 private
+touch index.txt index.txt.attr
+if [ ! -f serial ]; then echo 00 >serial; fi
+)
+
 sn=8
 
 # edit these to suit

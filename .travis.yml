@@ -13,6 +13,7 @@ addons:
       - libxslt1-dev
       - python2.7-dev
       - python-lxml
+      - openssl
 
 install:
   - "virtualenv /tmp/xml2rfc"
@@ -20,3 +21,4 @@ install:
 
 script:
   - "PATH=/tmp/xml2rfc/bin:$PATH make"
+  - sh testthing.sh
