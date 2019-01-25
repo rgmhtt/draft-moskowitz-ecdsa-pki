@@ -21,4 +21,3 @@ install:
 
 script:
   - "PATH=/tmp/xml2rfc/bin:$PATH make"
-  - sh testthing.sh
