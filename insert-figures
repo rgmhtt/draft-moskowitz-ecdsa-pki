@@ -30,6 +30,7 @@ while(<>) {
             print "<CODE BEGINS> file \"$basename\"\n"
         }
         elsif($file =~ /\.sh$/) {
+            $basename = basename($file);
             $sourcewrapper=1;
             print "<sourcecode> file \"$basename\"\n"
         }
