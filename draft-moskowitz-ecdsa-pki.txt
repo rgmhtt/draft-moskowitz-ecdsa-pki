@@ -14,7 +14,7 @@ Expires: February 14, 2020                                Fraunhofer SIT
 
 
                      Guide for building an ECC pki
-                      draft-moskowitz-ecdsa-pki-06
+                      draft-moskowitz-ecdsa-pki-07
 
 Abstract
 
