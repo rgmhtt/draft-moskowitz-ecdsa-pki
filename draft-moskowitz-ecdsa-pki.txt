@@ -231,7 +231,7 @@ Internet-Draft                  PKI Guide                    August 2019
    The first step is to create the pki environment.  Modify the
    variables to suit your needs.
 
-   <sourcecode> file ""
+   <sourcecode> file "setup1.sh"
 
    # edit directory here, or override
    export cadir=${cadir-/root/ca}
@@ -338,7 +338,7 @@ Moskowitz, et al.       Expires February 14, 2020               [Page 6]
 Internet-Draft                  PKI Guide                    August 2019
 
 
-<sourcecode> file ""
+<sourcecode> file "rootcert.sh"
 # Create passworded keypair file
 
 if [ ! -f $rootca/private/ca.key.$format ]; then
@@ -394,7 +394,7 @@ Moskowitz, et al.       Expires February 14, 2020               [Page 7]
 Internet-Draft                  PKI Guide                    August 2019
 
 
-   <sourcecode> file ""
+   <sourcecode> file "intermediate_setup.sh"
 
    export intdir=${intdir-$cadir/intermediate}
    mkdir -p $intdir
@@ -440,7 +440,7 @@ Internet-Draft                  PKI Guide                    August 2019
    Intermediate certificate.  Included are commands to view the file
    contents.
 
-<sourcecode> file ""
+<sourcecode> file "intermediate_cert.sh"
 # Create passworded keypair file
 
 
@@ -514,7 +514,7 @@ Internet-Draft                  PKI Guide                    August 2019
    certificate keypair, Server certificate signed request (CSR), and the
    Server certificate.  Included are commands to view the file contents.
 
-   <sourcecode> file ""
+   <sourcecode> file "end-server.sh"
 
    commonName=
    DN=$countryName$stateOrProvinceName$localityName
@@ -562,7 +562,7 @@ Moskowitz, et al.       Expires February 14, 2020              [Page 10]
 Internet-Draft                  PKI Guide                    August 2019
 
 
-   <sourcecode> file ""
+   <sourcecode> file "end-client-dn.sh"
    commonName=
    UserID="/UID=rgm"
    DN=$countryName$stateOrProvinceName$localityName
@@ -571,7 +571,7 @@ Internet-Draft                  PKI Guide                    August 2019
    clientemail=rgm@example.com
    </sourcecode>
 
-<sourcecode> file ""
+<sourcecode> file "end-client.sh"
 export subjectAltName="email:$clientemail"
 echo $subjectAltName
 
@@ -618,7 +618,7 @@ Moskowitz, et al.       Expires February 14, 2020              [Page 11]
 Internet-Draft                  PKI Guide                    August 2019
 
 
-   <sourcecode> file ""
+   <sourcecode> file "intermediate_1ar_setup.sh"
    export dir=$cadir/8021ARintermediate
    mkdir $dir
    cd $dir
@@ -674,7 +674,7 @@ Moskowitz, et al.       Expires February 14, 2020              [Page 12]
 Internet-Draft                  PKI Guide                    August 2019
 
 
-   <sourcecode> file ""
+   <sourcecode> file "intermediate_1ar_cert.sh"
    # Create passworded keypair file
 
    openssl genpkey -aes256 -algorithm ec\
@@ -736,7 +736,7 @@ Internet-Draft                  PKI Guide                    August 2019
    keypair, iDevID certificate signed request (CSR), and the iDevID
    certificate.  Included are commands to view the file contents.
 
-<sourcecode> file ""
+<sourcecode> file "idevid-csr-cert.sh"
 
 DevID=Wt1234
 countryName=
@@ -812,7 +812,7 @@ openssl asn1parse -i -strparse 493 -in $dir/certs/$DevID.cert.pem
    It is simple to create the CRL.  The CRL consists of the certificates
    flagged with an R (Revoked) in index.txt:
 
-   <sourcecode> file ""
+   <sourcecode> file "crl-creation.sh"
 
    # Select which Intermediate level
    intermediate=intermediate
@@ -842,7 +842,7 @@ Moskowitz, et al.       Expires February 14, 2020              [Page 15]
 Internet-Draft                  PKI Guide                    August 2019
 
 
-   <sourcecode> file ""
+   <sourcecode> file "revoke-step1.sh"
 
    targetcert=fqdn
    #targetcert=clientemail
@@ -898,7 +898,7 @@ Moskowitz, et al.       Expires February 14, 2020              [Page 16]
 Internet-Draft                  PKI Guide                    August 2019
 
 
-   <sourcecode> file ""
+   <sourcecode> file "ocsp-setup.sh"
 
    # Select which Intermediate level
    intermediate=intermediate
@@ -969,7 +969,7 @@ Internet-Draft                  PKI Guide                    August 2019
    In a terminal window, set variables dir and ocspurl (examples below),
    then run the simple OCSP service:
 
-   <sourcecode> file ""
+   <sourcecode> file "run-ocsp-server.sh"
 
    dir=/root/ca/intermediate
    ocspurl=ocsp.htt-consult.com
@@ -985,7 +985,7 @@ Internet-Draft                  PKI Guide                    August 2019
 
    In another window, test out a certificate status with:
 
-   <sourcecode> file ""
+   <sourcecode> file "test-ocsp-server.sh"
 
    targetcert=fqdn
    #targetcert=clientemail
@@ -1092,7 +1092,7 @@ Internet-Draft                  PKI Guide                    August 2019
    to provide the SAN value into the config file.  Another approach is
    to use piping as in:
 
-   <sourcecode> file ""
+   <sourcecode> file "san-creation-pipe.sh"
    openssl req -new -sha256 -key domain.key\
     -subj "/C=US/ST=CA/O=Acme, Inc./CN=foo.com" -reqexts SAN\
      -config <(cat /etc/ssl/openssl.cnf\
