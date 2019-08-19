@@ -12,7 +12,7 @@
  <?rfc iprnotified="no" ?>
   <?rfc strict="no" ?>
 
-<rfc category="info" docName="draft-moskowitz-ecdsa-pki-04" ipr="trust200902">
+<rfc category="info" docName="draft-moskowitz-ecdsa-pki-05" ipr="trust200902">
  <front>
 <title abbrev="PKI Guide">Guide for building an ECC pki</title>
         <author fullname="Robert Moskowitz" initials="R." surname="Moskowitz" >
@@ -60,7 +60,7 @@
         <uri>http://www.sandelman.ca/</uri>
       </address>
     </author>
-<date year="2018"/>
+<date year="2019"/>
    <area>Security Area</area>
    <workgroup>wg TBD</workgroup>
     <keyword>RFC</keyword>
@@ -139,8 +139,8 @@
 	the Root level is created and signs the Intermediate level
 	certificate it can be locked up.  In fact, the Root level could
 	exist completely on a mSD boot card for an ARM small computer like
-	a RaspberryPi.  A copy of this card came be made and securely
-	stored in a different location.
+	a RaspberryPi.  A copy of this card can be made and securely stored 
+	in a different location.
 </t>
 <t>
 	The Root level contains the Root certificate private key, a
@@ -485,7 +485,7 @@ INSERT_TEXT_FROM_FILE scripts/test-ocsp-server.sh END
 <t>
 	There is no direct openssl command line option to provide a
 	subjectAltName for a certificate.  This is a serious limitation.
-	Per <xref target="RFC2818">RFC 2818</xref> SAN is the object for
+	Per <xref target="RFC5280">RFC 5280</xref> SAN is the object for
 	providing email addresses and DNS addresses (FQDN), yet the common
 	practice has been to use the commonName object within the
 	distinguishedName object.  How much of this is due to the
@@ -500,6 +500,24 @@ INSERT_TEXT_FROM_FILE scripts/test-ocsp-server.sh END
 INSERT_TEXT_FROM_FILE scripts/san-creation-pipe.sh END
 </figure>
 </t>
+</section>
+<section anchor="CriticalSAN" title="Certificates with only subjectAltName">
+<t>
+	Also in <xref target="RFC5280">RFC 5280</xref> (sec 4.2.1.6):  if 
+	the only subject identity in the certificate is in subjectAltName, 
+	then Subject MUST be empty and subjectAltName MUST be marked as 
+	critical.
+</t> 
+<t>
+	This can be achieved with the variable DN=/ and subjectAltName 
+	(example given):
+</t> 
+<figure> <artwork>
+
+DN=/
+export subjectAltName=critical,email:postmaster@htt-consult.com
+
+</artwork> </figure>
 </section>
 <section anchor="DER" title="DER support, or lack thereof">
 <t>
@@ -616,7 +634,7 @@ the reasons for creating an intermediate CA.
 <references title="Informative References">
         &ieee_802_1ar;
         <?rfc include="reference.RFC.2315.xml"?>
-        <?rfc include="reference.RFC.2818.xml"?>
+        <?rfc include="reference.RFC.5280.xml"?>
         <?rfc include="reference.RFC.7292.xml"?>
 <reference anchor="WeakKeys" target="https://www.usenix.org/system/files/conference/usenixsecurity12/sec12-final228.pdf">
   <front>
