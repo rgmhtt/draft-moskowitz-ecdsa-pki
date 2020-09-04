@@ -5,16 +5,16 @@
 wg TBD                                                      R. Moskowitz
 Internet-Draft                                            HTT Consulting
 Intended status: Informational                               H. Birkholz
-Expires: February 14, 2020                                Fraunhofer SIT
+Expires: February 10, 2021                                Fraunhofer SIT
                                                                   L. Xia
                                                                   Huawei
                                                            M. Richardson
                                                                Sandelman
-                                                         August 13, 2019
+                                                          August 9, 2020
 
 
                      Guide for building an ECC pki
-                      draft-moskowitz-ecdsa-pki-07
+                      draft-moskowitz-ecdsa-pki-09
 
 Abstract
 
@@ -39,11 +39,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on February 14, 2020.
+   This Internet-Draft will expire on February 10, 2021.
 
 Copyright Notice
 
-   Copyright (c) 2019 IETF Trust and the persons identified as the
+   Copyright (c) 2020 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Moskowitz, et al.       Expires February 14, 2020               [Page 1]
+Moskowitz, et al.       Expires February 10, 2021               [Page 1]
 
-Internet-Draft                  PKI Guide                    August 2019
+Internet-Draft                  PKI Guide                    August 2020
 
 
    carefully, as they describe your rights and restrictions with respect
@@ -109,9 +109,9 @@ Table of Contents
 
 
 
-Moskowitz, et al.       Expires February 14, 2020               [Page 2]
+Moskowitz, et al.       Expires February 10, 2021               [Page 2]
 
-Internet-Draft                  PKI Guide                    August 2019
+Internet-Draft                  PKI Guide                    August 2020
 
 
      A.1.  OpenSSL Root config file  . . . . . . . . . . . . . . . .  23
@@ -165,9 +165,9 @@ Internet-Draft                  PKI Guide                    August 2019
 
 
 
-Moskowitz, et al.       Expires February 14, 2020               [Page 3]
+Moskowitz, et al.       Expires February 10, 2021               [Page 3]
 
-Internet-Draft                  PKI Guide                    August 2019
+Internet-Draft                  PKI Guide                    August 2020
 
 
 3.  The Basic PKI feature set
@@ -221,9 +221,9 @@ Internet-Draft                  PKI Guide                    August 2019
 
 
 
-Moskowitz, et al.       Expires February 14, 2020               [Page 4]
+Moskowitz, et al.       Expires February 10, 2021               [Page 4]
 
-Internet-Draft                  PKI Guide                    August 2019
+Internet-Draft                  PKI Guide                    August 2020
 
 
 4.1.  Setting up the Environment
@@ -277,9 +277,9 @@ Internet-Draft                  PKI Guide                    August 2019
 
 
 
-Moskowitz, et al.       Expires February 14, 2020               [Page 5]
+Moskowitz, et al.       Expires February 10, 2021               [Page 5]
 
-Internet-Draft                  PKI Guide                    August 2019
+Internet-Draft                  PKI Guide                    August 2020
 
 
    cadir
@@ -333,9 +333,9 @@ Internet-Draft                  PKI Guide                    August 2019
 
 
 
-Moskowitz, et al.       Expires February 14, 2020               [Page 6]
+Moskowitz, et al.       Expires February 10, 2021               [Page 6]
 
-Internet-Draft                  PKI Guide                    August 2019
+Internet-Draft                  PKI Guide                    August 2020
 
 
 <sourcecode> file "rootcert.sh"
@@ -389,9 +389,9 @@ openssl x509 -purpose -inform $format\
 
 
 
-Moskowitz, et al.       Expires February 14, 2020               [Page 7]
+Moskowitz, et al.       Expires February 10, 2021               [Page 7]
 
-Internet-Draft                  PKI Guide                    August 2019
+Internet-Draft                  PKI Guide                    August 2020
 
 
    <sourcecode> file "intermediate_setup.sh"
@@ -445,9 +445,9 @@ Internet-Draft                  PKI Guide                    August 2019
 
 
 
-Moskowitz, et al.       Expires February 14, 2020               [Page 8]
+Moskowitz, et al.       Expires February 10, 2021               [Page 8]
 
-Internet-Draft                  PKI Guide                    August 2019
+Internet-Draft                  PKI Guide                    August 2020
 
 
 if [ ! -f $intdir/private/intermediate.key.$format ]; then
@@ -501,9 +501,9 @@ fi
 
 
 
-Moskowitz, et al.       Expires February 14, 2020               [Page 9]
+Moskowitz, et al.       Expires February 10, 2021               [Page 9]
 
-Internet-Draft                  PKI Guide                    August 2019
+Internet-Draft                  PKI Guide                    August 2020
 
 
 </sourcecode>
@@ -557,9 +557,9 @@ Internet-Draft                  PKI Guide                    August 2019
 
 
 
-Moskowitz, et al.       Expires February 14, 2020              [Page 10]
+Moskowitz, et al.       Expires February 10, 2021              [Page 10]
 
-Internet-Draft                  PKI Guide                    August 2019
+Internet-Draft                  PKI Guide                    August 2020
 
 
    <sourcecode> file "end-client-dn.sh"
@@ -613,9 +613,9 @@ openssl x509 -noout -text -in $cadir/certs/$clientemail.cert.$format
 
 
 
-Moskowitz, et al.       Expires February 14, 2020              [Page 11]
+Moskowitz, et al.       Expires February 10, 2021              [Page 11]
 
-Internet-Draft                  PKI Guide                    August 2019
+Internet-Draft                  PKI Guide                    August 2020
 
 
    <sourcecode> file "intermediate_1ar_setup.sh"
@@ -669,9 +669,9 @@ Internet-Draft                  PKI Guide                    August 2019
 
 
 
-Moskowitz, et al.       Expires February 14, 2020              [Page 12]
+Moskowitz, et al.       Expires February 10, 2021              [Page 12]
 
-Internet-Draft                  PKI Guide                    August 2019
+Internet-Draft                  PKI Guide                    August 2020
 
 
    <sourcecode> file "intermediate_1ar_cert.sh"
@@ -725,9 +725,9 @@ Internet-Draft                  PKI Guide                    August 2019
 
 
 
-Moskowitz, et al.       Expires February 14, 2020              [Page 13]
+Moskowitz, et al.       Expires February 10, 2021              [Page 13]
 
-Internet-Draft                  PKI Guide                    August 2019
+Internet-Draft                  PKI Guide                    August 2020
 
 
 6.3.  Create an 802.1AR iDevID Certificate
@@ -781,9 +781,9 @@ openssl ca -config $cfgdir/openssl-8021ARintermediate.cnf -days 375\
 
 
 
-Moskowitz, et al.       Expires February 14, 2020              [Page 14]
+Moskowitz, et al.       Expires February 10, 2021              [Page 14]
 
-Internet-Draft                  PKI Guide                    August 2019
+Internet-Draft                  PKI Guide                    August 2020
 
 
     -extensions 8021ar_idevid -notext -md sha256 \
@@ -837,9 +837,9 @@ openssl asn1parse -i -strparse 493 -in $dir/certs/$DevID.cert.pem
 
 
 
-Moskowitz, et al.       Expires February 14, 2020              [Page 15]
+Moskowitz, et al.       Expires February 10, 2021              [Page 15]
 
-Internet-Draft                  PKI Guide                    August 2019
+Internet-Draft                  PKI Guide                    August 2020
 
 
    <sourcecode> file "revoke-step1.sh"
@@ -893,9 +893,9 @@ Internet-Draft                  PKI Guide                    August 2019
 
 
 
-Moskowitz, et al.       Expires February 14, 2020              [Page 16]
+Moskowitz, et al.       Expires February 10, 2021              [Page 16]
 
-Internet-Draft                  PKI Guide                    August 2019
+Internet-Draft                  PKI Guide                    August 2020
 
 
    <sourcecode> file "ocsp-setup.sh"
@@ -949,9 +949,9 @@ Internet-Draft                  PKI Guide                    August 2019
 
 
 
-Moskowitz, et al.       Expires February 14, 2020              [Page 17]
+Moskowitz, et al.       Expires February 10, 2021              [Page 17]
 
-Internet-Draft                  PKI Guide                    August 2019
+Internet-Draft                  PKI Guide                    August 2020
 
 
 8.2.  Revoke a Certificate
@@ -1005,9 +1005,9 @@ Internet-Draft                  PKI Guide                    August 2019
 
 
 
-Moskowitz, et al.       Expires February 14, 2020              [Page 18]
+Moskowitz, et al.       Expires February 10, 2021              [Page 18]
 
-Internet-Draft                  PKI Guide                    August 2019
+Internet-Draft                  PKI Guide                    August 2020
 
 
 9.  Footnotes
@@ -1061,9 +1061,9 @@ Internet-Draft                  PKI Guide                    August 2019
 
 
 
-Moskowitz, et al.       Expires February 14, 2020              [Page 19]
+Moskowitz, et al.       Expires February 10, 2021              [Page 19]
 
-Internet-Draft                  PKI Guide                    August 2019
+Internet-Draft                  PKI Guide                    August 2020
 
 
 9.2.  Some OpenSSL config file limitations
@@ -1117,9 +1117,9 @@ Internet-Draft                  PKI Guide                    August 2019
 
 
 
-Moskowitz, et al.       Expires February 14, 2020              [Page 20]
+Moskowitz, et al.       Expires February 10, 2021              [Page 20]
 
-Internet-Draft                  PKI Guide                    August 2019
+Internet-Draft                  PKI Guide                    August 2020
 
 
    Finally, openssl does supports converting a PEM certificate to DER:
@@ -1173,9 +1173,9 @@ Internet-Draft                  PKI Guide                    August 2019
 
 
 
-Moskowitz, et al.       Expires February 14, 2020              [Page 21]
+Moskowitz, et al.       Expires February 10, 2021              [Page 21]
 
-Internet-Draft                  PKI Guide                    August 2019
+Internet-Draft                  PKI Guide                    August 2020
 
 
    There is nothing in these recipes that requires super-user on the
@@ -1229,9 +1229,9 @@ Internet-Draft                  PKI Guide                    August 2019
 
 
 
-Moskowitz, et al.       Expires February 14, 2020              [Page 22]
+Moskowitz, et al.       Expires February 10, 2021              [Page 22]
 
-Internet-Draft                  PKI Guide                    August 2019
+Internet-Draft                  PKI Guide                    August 2020
 
 
    [IEEE.802.1AR_2009]
@@ -1285,9 +1285,9 @@ A.1.  OpenSSL Root config file
 
 
 
-Moskowitz, et al.       Expires February 14, 2020              [Page 23]
+Moskowitz, et al.       Expires February 10, 2021              [Page 23]
 
-Internet-Draft                  PKI Guide                    August 2019
+Internet-Draft                  PKI Guide                    August 2020
 
 
    new_certs_dir     = $dir/newcerts
@@ -1341,9 +1341,9 @@ Internet-Draft                  PKI Guide                    August 2019
 
 
 
-Moskowitz, et al.       Expires February 14, 2020              [Page 24]
+Moskowitz, et al.       Expires February 10, 2021              [Page 24]
 
-Internet-Draft                  PKI Guide                    August 2019
+Internet-Draft                  PKI Guide                    August 2020
 
 
    distinguished_name  = req_distinguished_name
@@ -1397,9 +1397,9 @@ Internet-Draft                  PKI Guide                    August 2019
 
 
 
-Moskowitz, et al.       Expires February 14, 2020              [Page 25]
+Moskowitz, et al.       Expires February 10, 2021              [Page 25]
 
-Internet-Draft                  PKI Guide                    August 2019
+Internet-Draft                  PKI Guide                    August 2020
 
 
    authorityKeyIdentifier=keyid:always
@@ -1453,9 +1453,9 @@ A.2.  OpenSSL Intermediate config file
 
 
 
-Moskowitz, et al.       Expires February 14, 2020              [Page 26]
+Moskowitz, et al.       Expires February 10, 2021              [Page 26]
 
-Internet-Draft                  PKI Guide                    August 2019
+Internet-Draft                  PKI Guide                    August 2020
 
 
    # SHA-1 is deprecated, so use SHA-2 instead.
@@ -1509,9 +1509,9 @@ Internet-Draft                  PKI Guide                    August 2019
 
 
 
-Moskowitz, et al.       Expires February 14, 2020              [Page 27]
+Moskowitz, et al.       Expires February 10, 2021              [Page 27]
 
-Internet-Draft                  PKI Guide                    August 2019
+Internet-Draft                  PKI Guide                    August 2020
 
 
    localityName                    = Locality Name
@@ -1565,9 +1565,9 @@ Internet-Draft                  PKI Guide                    August 2019
 
 
 
-Moskowitz, et al.       Expires February 14, 2020              [Page 28]
+Moskowitz, et al.       Expires February 10, 2021              [Page 28]
 
-Internet-Draft                  PKI Guide                    August 2019
+Internet-Draft                  PKI Guide                    August 2020
 
 
    nsCertType = server
@@ -1621,9 +1621,9 @@ A.3.  OpenSSL 802.1AR Intermediate config file
 
 
 
-Moskowitz, et al.       Expires February 14, 2020              [Page 29]
+Moskowitz, et al.       Expires February 10, 2021              [Page 29]
 
-Internet-Draft                  PKI Guide                    August 2019
+Internet-Draft                  PKI Guide                    August 2020
 
 
    serial            = $dir/serial
@@ -1677,9 +1677,9 @@ Internet-Draft                  PKI Guide                    August 2019
 
 
 
-Moskowitz, et al.       Expires February 14, 2020              [Page 30]
+Moskowitz, et al.       Expires February 10, 2021              [Page 30]
 
-Internet-Draft                  PKI Guide                    August 2019
+Internet-Draft                  PKI Guide                    August 2020
 
 
    distinguished_name  = req_distinguished_name
@@ -1733,9 +1733,9 @@ Internet-Draft                  PKI Guide                    August 2019
 
 
 
-Moskowitz, et al.       Expires February 14, 2020              [Page 31]
+Moskowitz, et al.       Expires February 10, 2021              [Page 31]
 
-Internet-Draft                  PKI Guide                    August 2019
+Internet-Draft                  PKI Guide                    August 2020
 
 
    # Extensions for IEEE 802.1AR iDevID
@@ -1789,9 +1789,9 @@ Authors' Addresses
 
 
 
-Moskowitz, et al.       Expires February 14, 2020              [Page 32]
+Moskowitz, et al.       Expires February 10, 2021              [Page 32]
 
-Internet-Draft                  PKI Guide                    August 2019
+Internet-Draft                  PKI Guide                    August 2020
 
 
    Michael C. Richardson
@@ -1845,4 +1845,4 @@ Internet-Draft                  PKI Guide                    August 2019
 
 
 
-Moskowitz, et al.       Expires February 14, 2020              [Page 33]
+Moskowitz, et al.       Expires February 10, 2021              [Page 33]
