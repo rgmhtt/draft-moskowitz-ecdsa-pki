@@ -139,7 +139,7 @@
 	the Root level is created and signs the Intermediate level
 	certificate it can be locked up.  In fact, the Root level could
 	exist completely on a mSD boot card for an ARM small computer like
-	a RaspberryPi.  A copy of this card can be made and securely stored 
+	a RaspberryPi.  A copy of this card can be made and securely stored
 	in a different location.
 </t>
 <t>
@@ -506,15 +506,15 @@ INSERT_TEXT_FROM_FILE scripts/san-creation-pipe.sh END
 </section>
 <section anchor="CriticalSAN" title="Certificates with only subjectAltName">
 <t>
-	Also in <xref target="RFC5280">RFC 5280</xref> (sec 4.2.1.6):  if 
-	the only subject identity in the certificate is in subjectAltName, 
-	then Subject MUST be empty and subjectAltName MUST be marked as 
+	Also in <xref target="RFC5280">RFC 5280</xref> (sec 4.2.1.6):  if
+	the only subject identity in the certificate is in subjectAltName,
+	then Subject MUST be empty and subjectAltName MUST be marked as
 	critical.
-</t> 
+</t>
 <t>
-	This can be achieved with the variable DN=/ and subjectAltName 
+	This can be achieved with the variable DN=/ and subjectAltName
 	(example given):
-</t> 
+</t>
 <figure> <artwork>
 
 DN=/
