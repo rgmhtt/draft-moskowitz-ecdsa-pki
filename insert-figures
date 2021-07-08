@@ -29,11 +29,17 @@ while(<>) {
             $codewrapper=1;
             print "<CODE BEGINS> file \"$basename\"\n"
         }
+        elsif($file =~ /\.sh$/) {
+            $basename = basename($file);
+            $sourcewrapper=1;
+            print "<sourcecode> file \"$basename\"\n"
+        }
         while(<FILE>) {
             print;
         }
         close(FILE);
         print "<CODE ENDS>\n" if $codewrapper;
+        print "</sourcecode>\n" if $sourcewrapper;
         print "]]></artwork>\n";
     } else {
         print;

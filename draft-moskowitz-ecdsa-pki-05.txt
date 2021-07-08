@@ -5,16 +5,16 @@
 wg TBD                                                      R. Moskowitz
 Internet-Draft                                            HTT Consulting
 Intended status: Informational                               H. Birkholz
-Expires: February 10, 2021                                Fraunhofer SIT
+Expires: September 12, 2019                               Fraunhofer SIT
                                                                   L. Xia
                                                                   Huawei
                                                            M. Richardson
                                                                Sandelman
-                                                          August 9, 2020
+                                                          March 11, 2019
 
 
                      Guide for building an ECC pki
-                      draft-moskowitz-ecdsa-pki-09
+                      draft-moskowitz-ecdsa-pki-05
 
 Abstract
 
@@ -39,11 +39,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on February 10, 2021.
+   This Internet-Draft will expire on September 12, 2019.
 
 Copyright Notice
 
-   Copyright (c) 2020 IETF Trust and the persons identified as the
+   Copyright (c) 2019 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Moskowitz, et al.       Expires February 10, 2021               [Page 1]
+Moskowitz, et al.      Expires September 12, 2019               [Page 1]
 
-Internet-Draft                  PKI Guide                    August 2020
+Internet-Draft                  PKI Guide                     March 2019
 
 
    carefully, as they describe your rights and restrictions with respect
@@ -92,9 +92,9 @@ Table of Contents
      8.1.  Create the OCSP Certificate . . . . . . . . . . . . . . .  16
      8.2.  Revoke a Certificate  . . . . . . . . . . . . . . . . . .  18
      8.3.  Testing OCSP with Openssl . . . . . . . . . . . . . . . .  18
-   9.  Footnotes . . . . . . . . . . . . . . . . . . . . . . . . . .  19
+   9.  Footnotes . . . . . . . . . . . . . . . . . . . . . . . . . .  18
      9.1.  Certificate Serial Number . . . . . . . . . . . . . . . .  19
-     9.2.  Some OpenSSL config file limitations  . . . . . . . . . .  20
+     9.2.  Some OpenSSL config file limitations  . . . . . . . . . .  19
      9.3.  subjectAltName support, or lack thereof . . . . . . . . .  20
      9.4.  DER support, or lack thereof  . . . . . . . . . . . . . .  20
    10. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  21
@@ -109,13 +109,13 @@ Table of Contents
 
 
 
-Moskowitz, et al.       Expires February 10, 2021               [Page 2]
+Moskowitz, et al.      Expires September 12, 2019               [Page 2]
 
-Internet-Draft                  PKI Guide                    August 2020
+Internet-Draft                  PKI Guide                     March 2019
 
 
      A.1.  OpenSSL Root config file  . . . . . . . . . . . . . . . .  23
-     A.2.  OpenSSL Intermediate config file  . . . . . . . . . . . .  26
+     A.2.  OpenSSL Intermediate config file  . . . . . . . . . . . .  25
      A.3.  OpenSSL 802.1AR Intermediate config file  . . . . . . . .  29
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  32
 
@@ -165,9 +165,9 @@ Internet-Draft                  PKI Guide                    August 2020
 
 
 
-Moskowitz, et al.       Expires February 10, 2021               [Page 3]
+Moskowitz, et al.      Expires September 12, 2019               [Page 3]
 
-Internet-Draft                  PKI Guide                    August 2020
+Internet-Draft                  PKI Guide                     March 2019
 
 
 3.  The Basic PKI feature set
@@ -221,9 +221,9 @@ Internet-Draft                  PKI Guide                    August 2020
 
 
 
-Moskowitz, et al.       Expires February 10, 2021               [Page 4]
+Moskowitz, et al.      Expires September 12, 2019               [Page 4]
 
-Internet-Draft                  PKI Guide                    August 2020
+Internet-Draft                  PKI Guide                     March 2019
 
 
 4.1.  Setting up the Environment
@@ -231,7 +231,6 @@ Internet-Draft                  PKI Guide                    August 2020
    The first step is to create the pki environment.  Modify the
    variables to suit your needs.
 
-   <sourcecode> file "setup1.sh"
 
    # edit directory here, or override
    export cadir=${cadir-/root/ca}
@@ -268,21 +267,21 @@ Internet-Draft                  PKI Guide                    August 2020
    export subjectAltName=email:postmaster@htt-consult.com
 
    export default_crl_days=2048
-   </sourcecode>
 
    Where:
 
    dir
             Directory for certificate files
 
-
-
-Moskowitz, et al.       Expires February 10, 2021               [Page 5]
-
-Internet-Draft                  PKI Guide                    August 2020
-
-
    cadir
+
+
+
+Moskowitz, et al.      Expires September 12, 2019               [Page 5]
+
+Internet-Draft                  PKI Guide                     March 2019
+
+
             Directory for Root certificate files
 
    Format
@@ -333,12 +332,12 @@ Internet-Draft                  PKI Guide                    August 2020
 
 
 
-Moskowitz, et al.       Expires February 10, 2021               [Page 6]
+
+Moskowitz, et al.      Expires September 12, 2019               [Page 6]
 
-Internet-Draft                  PKI Guide                    August 2020
+Internet-Draft                  PKI Guide                     March 2019
 
 
-<sourcecode> file "rootcert.sh"
 # Create passworded keypair file
 
 if [ ! -f $rootca/private/ca.key.$format ]; then
@@ -369,7 +368,6 @@ openssl x509 -inform $format -in $cadir/certs/ca.cert.$format\
      -text -noout
 openssl x509 -purpose -inform $format\
      -in $cadir/certs/ca.cert.$format -inform $format
-</sourcecode>
 
 5.  The Intermediate level
 
@@ -389,12 +387,12 @@ openssl x509 -purpose -inform $format\
 
 
 
-Moskowitz, et al.       Expires February 10, 2021               [Page 7]
+
+
+Moskowitz, et al.      Expires September 12, 2019               [Page 7]
 
-Internet-Draft                  PKI Guide                    August 2020
+Internet-Draft                  PKI Guide                     March 2019
 
-
-   <sourcecode> file "intermediate_setup.sh"
 
    export intdir=${intdir-$cadir/intermediate}
    mkdir -p $intdir
@@ -427,7 +425,6 @@ Internet-Draft                  PKI Guide                    August 2020
    DN=$DN$organizationalUnitName$commonName
    echo $DN
 
-   </sourcecode>
 
    Create the file, $dir/openssl-intermediate.cnf from the contents in
    Appendix A.2.  Uncomment lines for crlDistributionPoints and
@@ -440,19 +437,19 @@ Internet-Draft                  PKI Guide                    August 2020
    Intermediate certificate.  Included are commands to view the file
    contents.
 
-<sourcecode> file "intermediate_cert.sh"
 # Create passworded keypair file
-
-
-
-Moskowitz, et al.       Expires February 10, 2021               [Page 8]
-
-Internet-Draft                  PKI Guide                    August 2020
-
 
 if [ ! -f $intdir/private/intermediate.key.$format ]; then
     echo GENERATING intermediate KEY
     openssl genpkey $pass -aes256 -algorithm ec \
+
+
+
+Moskowitz, et al.      Expires September 12, 2019               [Page 8]
+
+Internet-Draft                  PKI Guide                     March 2019
+
+
             -pkeyopt ec_paramgen_curve:prime256v1 \
             -outform $format -pkeyopt ec_param_enc:named_curve\
             -out $intdir/private/intermediate.key.$format
@@ -501,12 +498,13 @@ fi
 
 
 
-Moskowitz, et al.       Expires February 10, 2021               [Page 9]
+
+
+
+Moskowitz, et al.      Expires September 12, 2019               [Page 9]
 
-Internet-Draft                  PKI Guide                    August 2020
+Internet-Draft                  PKI Guide                     March 2019
 
-
-</sourcecode>
 
 5.3.  Create a Server EE Certificate
 
@@ -514,7 +512,6 @@ Internet-Draft                  PKI Guide                    August 2020
    certificate keypair, Server certificate signed request (CSR), and the
    Server certificate.  Included are commands to view the file contents.
 
-   <sourcecode> file "end-server.sh"
 
    commonName=
    DN=$countryName$stateOrProvinceName$localityName
@@ -547,7 +544,6 @@ Internet-Draft                  PKI Guide                    August 2020
         $dir/certs/$serverfqdn.cert.$format
    openssl x509 -noout -text -in $dir/certs/$serverfqdn.cert.$format
 
-   </sourcecode>
 
 5.4.  Create a Client EE Certificate
 
@@ -557,21 +553,22 @@ Internet-Draft                  PKI Guide                    August 2020
 
 
 
-Moskowitz, et al.       Expires February 10, 2021              [Page 10]
+
+
+
+
+Moskowitz, et al.      Expires September 12, 2019              [Page 10]
 
-Internet-Draft                  PKI Guide                    August 2020
+Internet-Draft                  PKI Guide                     March 2019
 
 
-   <sourcecode> file "end-client-dn.sh"
    commonName=
    UserID="/UID=rgm"
    DN=$countryName$stateOrProvinceName$localityName
    DN=$DN$organizationName$organizationalUnitName$commonName$UserID
    echo $DN
    clientemail=rgm@example.com
-   </sourcecode>
 
-<sourcecode> file "end-client.sh"
 export subjectAltName="email:$clientemail"
 echo $subjectAltName
 
@@ -601,7 +598,6 @@ chmod 444 $cadir/certs/$clientemail.cert.$format
 openssl verify -CAfile $cadir/certs/ca-chain.cert.$format\
      $cadir/certs/$clientemail.cert.$format
 openssl x509 -noout -text -in $cadir/certs/$clientemail.cert.$format
-</sourcecode>
 
 6.  The 802.1AR Intermediate level
 
@@ -613,12 +609,15 @@ openssl x509 -noout -text -in $cadir/certs/$clientemail.cert.$format
 
 
 
-Moskowitz, et al.       Expires February 10, 2021              [Page 11]
+
+
+
+
+Moskowitz, et al.      Expires September 12, 2019              [Page 11]
 
-Internet-Draft                  PKI Guide                    August 2020
+Internet-Draft                  PKI Guide                     March 2019
 
 
-   <sourcecode> file "intermediate_1ar_setup.sh"
    export dir=$cadir/8021ARintermediate
    mkdir $dir
    cd $dir
@@ -652,7 +651,6 @@ Internet-Draft                  PKI Guide                    August 2020
    echo $DN
    export subjectAltName=email:postmaster@htt-consult.com
    echo $subjectAltName
-   </sourcecode>
 
    Create the file, $dir/openssl-8021ARintermediate.cnf from the
    contents in Appendix A.3.  Uncomment lines for crlDistributionPoints
@@ -669,12 +667,13 @@ Internet-Draft                  PKI Guide                    August 2020
 
 
 
-Moskowitz, et al.       Expires February 10, 2021              [Page 12]
+
+
+Moskowitz, et al.      Expires September 12, 2019              [Page 12]
 
-Internet-Draft                  PKI Guide                    August 2020
+Internet-Draft                  PKI Guide                     March 2019
 
 
-   <sourcecode> file "intermediate_1ar_cert.sh"
    # Create passworded keypair file
 
    openssl genpkey -aes256 -algorithm ec\
@@ -719,15 +718,16 @@ Internet-Draft                  PKI Guide                    August 2020
       $cadir/certs/ca.cert.$format > $dir/certs/ca-chain.cert.$format
    chmod 444 $dir/certs/ca-chain.cert.$format
 
-   </sourcecode>
 
 
 
 
 
-Moskowitz, et al.       Expires February 10, 2021              [Page 13]
+
+
+Moskowitz, et al.      Expires September 12, 2019              [Page 13]
 
-Internet-Draft                  PKI Guide                    August 2020
+Internet-Draft                  PKI Guide                     March 2019
 
 
 6.3.  Create an 802.1AR iDevID Certificate
@@ -736,7 +736,6 @@ Internet-Draft                  PKI Guide                    August 2020
    keypair, iDevID certificate signed request (CSR), and the iDevID
    certificate.  Included are commands to view the file contents.
 
-<sourcecode> file "idevid-csr-cert.sh"
 
 DevID=Wt1234
 countryName=
@@ -778,15 +777,15 @@ openssl asn1parse -i -strparse 189 -in $dir/csr/$DevID.csr.pem
 openssl rand -hex $sn > $dir/serial # hex 8 is minimum, 19 is maximum
 # Note 'openssl ca' does not support DER format
 openssl ca -config $cfgdir/openssl-8021ARintermediate.cnf -days 375\
-
-
-
-Moskowitz, et al.       Expires February 10, 2021              [Page 14]
-
-Internet-Draft                  PKI Guide                    August 2020
-
-
     -extensions 8021ar_idevid -notext -md sha256 \
+
+
+
+Moskowitz, et al.      Expires September 12, 2019              [Page 14]
+
+Internet-Draft                  PKI Guide                     March 2019
+
+
     -in $dir/csr/$DevID.csr.$format\
     -out $dir/certs/$DevID.cert.$format
 chmod 444 $dir/certs/$DevID.cert.$format
@@ -799,7 +798,6 @@ openssl asn1parse -i -in $dir/certs/$DevID.cert.pem
 # offset of start of hardwareModuleName and use that in place of 493
 openssl asn1parse -i -strparse 493 -in $dir/certs/$DevID.cert.pem
 
-</sourcecode>
 
 7.  Setting up a CRL for an Intermediate CA
 
@@ -812,7 +810,6 @@ openssl asn1parse -i -strparse 493 -in $dir/certs/$DevID.cert.pem
    It is simple to create the CRL.  The CRL consists of the certificates
    flagged with an R (Revoked) in index.txt:
 
-   <sourcecode> file "crl-creation.sh"
 
    # Select which Intermediate level
    intermediate=intermediate
@@ -827,7 +824,6 @@ openssl asn1parse -i -strparse 493 -in $dir/certs/$DevID.cert.pem
 
    openssl crl -in $dir/crl/$crl -noout -text
 
-   </sourcecode>
 
 7.2.  Revoke a Certificate
 
@@ -837,12 +833,14 @@ openssl asn1parse -i -strparse 493 -in $dir/certs/$DevID.cert.pem
 
 
 
-Moskowitz, et al.       Expires February 10, 2021              [Page 15]
+
+
+
+
+Moskowitz, et al.      Expires September 12, 2019              [Page 15]
 
-Internet-Draft                  PKI Guide                    August 2020
+Internet-Draft                  PKI Guide                     March 2019
 
-
-   <sourcecode> file "revoke-step1.sh"
 
    targetcert=fqdn
    #targetcert=clientemail
@@ -851,7 +849,6 @@ Internet-Draft                  PKI Guide                    August 2020
    openssl ca -config $dir/openssl-$intermediate.cnf\
     -revoke $dir/certs/$targetcert.cert.$format
 
-   </sourcecode>
 
    Recreate the CRL using Section 7.1.
 
@@ -893,12 +890,13 @@ Internet-Draft                  PKI Guide                    August 2020
 
 
 
-Moskowitz, et al.       Expires February 10, 2021              [Page 16]
+
+
+
+Moskowitz, et al.      Expires September 12, 2019              [Page 16]
 
-Internet-Draft                  PKI Guide                    August 2020
+Internet-Draft                  PKI Guide                     March 2019
 
-
-   <sourcecode> file "ocsp-setup.sh"
 
    # Select which Intermediate level
    intermediate=intermediate
@@ -943,15 +941,17 @@ Internet-Draft                  PKI Guide                    August 2020
         $dir/certs/$ocspurl.cert.$format
    openssl x509 -noout -text -in $dir/certs/$ocspurl.cert.$format
 
-   </sourcecode>
 
 
 
 
 
-Moskowitz, et al.       Expires February 10, 2021              [Page 17]
+
+
+
+Moskowitz, et al.      Expires September 12, 2019              [Page 17]
 
-Internet-Draft                  PKI Guide                    August 2020
+Internet-Draft                  PKI Guide                     March 2019
 
 
 8.2.  Revoke a Certificate
@@ -969,7 +969,6 @@ Internet-Draft                  PKI Guide                    August 2020
    In a terminal window, set variables dir and ocspurl (examples below),
    then run the simple OCSP service:
 
-   <sourcecode> file "run-ocsp-server.sh"
 
    dir=/root/ca/intermediate
    ocspurl=ocsp.htt-consult.com
@@ -981,11 +980,9 @@ Internet-Draft                  PKI Guide                    August 2020
          -rsigner $dir/certs/$ocspurl.cert.pem \
          -nrequest 1
 
-   </sourcecode>
 
    In another window, test out a certificate status with:
 
-   <sourcecode> file "test-ocsp-server.sh"
 
    targetcert=fqdn
    #targetcert=clientemail
@@ -996,25 +993,22 @@ Internet-Draft                  PKI Guide                    August 2020
          -issuer $dir/certs/$intermediate.cert.pem \
          -cert $dir/certs/$targetcert.cert.pem
 
-   </sourcecode>
 
    Revoke the certificate, Section 7.2, restart the test Responder again
    as above, then check the certificate status.
-
-
-
-
-
-Moskowitz, et al.       Expires February 10, 2021              [Page 18]
-
-Internet-Draft                  PKI Guide                    August 2020
-
 
 9.  Footnotes
 
    Creating this document was a real education in the state of openSSL,
    X.509 certificate guidance, and just general level of certificate
    awareness.  Here are a few short notes.
+
+
+
+Moskowitz, et al.      Expires September 12, 2019              [Page 18]
+
+Internet-Draft                  PKI Guide                     March 2019
+
 
 9.1.  Certificate Serial Number
 
@@ -1055,17 +1049,6 @@ Internet-Draft                  PKI Guide                    August 2020
 
    With 3DES, k=64, and with AES, k=128.
 
-
-
-
-
-
-
-Moskowitz, et al.       Expires February 10, 2021              [Page 19]
-
-Internet-Draft                  PKI Guide                    August 2020
-
-
 9.2.  Some OpenSSL config file limitations
 
    There is a bit of inconsistency in how different parts and fields in
@@ -1074,6 +1057,14 @@ Internet-Draft                  PKI Guide                    August 2020
    of allowing null fields means a script cannot feed in an environment
    variable with value null.  In such a case, the field has to be
    removed from the config file.
+
+
+
+
+Moskowitz, et al.      Expires September 12, 2019              [Page 19]
+
+Internet-Draft                  PKI Guide                     March 2019
+
 
    The expectation is each CA within a PKI has its own config file,
    customized to the certificates supported by that CA.
@@ -1092,14 +1083,12 @@ Internet-Draft                  PKI Guide                    August 2020
    to provide the SAN value into the config file.  Another approach is
    to use piping as in:
 
-   <sourcecode> file "san-creation-pipe.sh"
    openssl req -new -sha256 -key domain.key\
     -subj "/C=US/ST=CA/O=Acme, Inc./CN=foo.com" -reqexts SAN\
      -config <(cat /etc/ssl/openssl.cnf\
       <(printf "[SAN]\nsubjectAltName=DNS:foo.com,DNS:www.foo.com"))\
      -out domain.csr
 
-   </sourcecode>
 
 9.4.  DER support, or lack thereof
 
@@ -1114,14 +1103,6 @@ Internet-Draft                  PKI Guide                    August 2020
    PKCS#7 [RFC2315], where others point out that this format is poorly
    support 'in the field', whereas PKCS#12 [RFC7292] works for them.
 
-
-
-
-Moskowitz, et al.       Expires February 10, 2021              [Page 20]
-
-Internet-Draft                  PKI Guide                    August 2020
-
-
    Finally, openssl does supports converting a PEM certificate to DER:
 
 
@@ -1131,6 +1112,15 @@ Internet-Draft                  PKI Guide                    August 2020
    This should also work for the keypair.  However, in a highly
    constrained device it may make more sense to just store the raw
    keypair in the device's very limited secure storage.
+
+
+
+
+
+Moskowitz, et al.      Expires September 12, 2019              [Page 20]
+
+Internet-Draft                  PKI Guide                     March 2019
+
 
 10.  IANA Considerations
 
@@ -1169,15 +1159,6 @@ Internet-Draft                  PKI Guide                    August 2020
    or just close the shell that was used, and start a new one.  (The -p
    option to umask is a bash-ism)
 
-
-
-
-
-Moskowitz, et al.       Expires February 10, 2021              [Page 21]
-
-Internet-Draft                  PKI Guide                    August 2020
-
-
    There is nothing in these recipes that requires super-user on the
    system creating the certificates.  Provided that adequate randomness
    is available, a virtual machine or container is entirely appropriate.
@@ -1187,6 +1168,15 @@ Internet-Draft                  PKI Guide                    August 2020
    The scripts and configuration files and in particular, private keys,
    may be kept offline on a USB key for instance, and loaded when
    needed.
+
+
+
+
+
+Moskowitz, et al.      Expires September 12, 2019              [Page 21]
+
+Internet-Draft                  PKI Guide                     March 2019
+
 
    The OCSP server needs to be online and available to all clients that
    will use the certificates.  This may mean available on the Internet.
@@ -1222,18 +1212,6 @@ Internet-Draft                  PKI Guide                    August 2020
 
 13.2.  Informative References
 
-
-
-
-
-
-
-
-Moskowitz, et al.       Expires February 10, 2021              [Page 22]
-
-Internet-Draft                  PKI Guide                    August 2020
-
-
    [IEEE.802.1AR_2009]
               IEEE, "IEEE Standard for Local and metropolitan area
               networks - Secure Device Identity", IEEE 802.1AR-2009,
@@ -1248,6 +1226,13 @@ Internet-Draft                  PKI Guide                    August 2020
    [RFC2818]  Rescorla, E., "HTTP Over TLS", RFC 2818,
               DOI 10.17487/RFC2818, May 2000,
               <https://www.rfc-editor.org/info/rfc2818>.
+
+
+
+Moskowitz, et al.      Expires September 12, 2019              [Page 22]
+
+Internet-Draft                  PKI Guide                     March 2019
+
 
    [RFC7292]  Moriarty, K., Ed., Nystrom, M., Parkinson, S., Rusch, A.,
               and M. Scott, "PKCS #12: Personal Information Exchange
@@ -1282,14 +1267,6 @@ A.1.  OpenSSL Root config file
 
    certs             = $dir/certs
    crl_dir           = $dir/crl
-
-
-
-Moskowitz, et al.       Expires February 10, 2021              [Page 23]
-
-Internet-Draft                  PKI Guide                    August 2020
-
-
    new_certs_dir     = $dir/newcerts
    database          = $dir/index.txt
    serial            = $dir/serial
@@ -1304,6 +1281,14 @@ Internet-Draft                  PKI Guide                    August 2020
    crl               = $dir/crl/ca.crl.pem
    crl_extensions    = crl_ext
    default_crl_days  = 30
+
+
+
+
+Moskowitz, et al.      Expires September 12, 2019              [Page 23]
+
+Internet-Draft                  PKI Guide                     March 2019
+
 
    # SHA-1 is deprecated, so use SHA-2 instead.
    default_md        = sha256
@@ -1338,14 +1323,6 @@ Internet-Draft                  PKI Guide                    August 2020
    [ req ]
    # Options for the `req` tool (`man req`).
    default_bits        = 2048
-
-
-
-Moskowitz, et al.       Expires February 10, 2021              [Page 24]
-
-Internet-Draft                  PKI Guide                    August 2020
-
-
    distinguished_name  = req_distinguished_name
    string_mask         = utf8only
    req_extensions      = req_ext
@@ -1361,6 +1338,14 @@ Internet-Draft                  PKI Guide                    August 2020
    countryName                     = Country Name (2 letter code)
    stateOrProvinceName             = State or Province Name
    localityName                    = Locality Name
+
+
+
+Moskowitz, et al.      Expires September 12, 2019              [Page 24]
+
+Internet-Draft                  PKI Guide                     March 2019
+
+
    0.organizationName              = Organization Name
    organizationalUnitName          = Organizational Unit Name
    commonName                      = Common Name
@@ -1394,14 +1379,6 @@ Internet-Draft                  PKI Guide                    August 2020
 
    [ crl_ext ]
    # Extension for CRLs (`man x509v3_config`).
-
-
-
-Moskowitz, et al.       Expires February 10, 2021              [Page 25]
-
-Internet-Draft                  PKI Guide                    August 2020
-
-
    authorityKeyIdentifier=keyid:always
 
    [ ocsp ]
@@ -1411,11 +1388,19 @@ Internet-Draft                  PKI Guide                    August 2020
    authorityKeyIdentifier = keyid,issuer
    keyUsage = critical, digitalSignature
    extendedKeyUsage = critical, OCSPSigning
-   </sourcecode>
 
 A.2.  OpenSSL Intermediate config file
 
    The following is the openssl-intermediate.cnf file contents.
+
+
+
+
+
+Moskowitz, et al.      Expires September 12, 2019              [Page 25]
+
+Internet-Draft                  PKI Guide                     March 2019
+
 
    Remove the crlDistributionPoints to drop CRL support and
    authorityInfoAccess to drop OCSP support.
@@ -1450,14 +1435,6 @@ A.2.  OpenSSL Intermediate config file
    crl_extensions    = crl_ext
    default_crl_days  = $ENV::default_crl_days
 
-
-
-
-Moskowitz, et al.       Expires February 10, 2021              [Page 26]
-
-Internet-Draft                  PKI Guide                    August 2020
-
-
    # SHA-1 is deprecated, so use SHA-2 instead.
    default_md        = sha256
 
@@ -1473,6 +1450,14 @@ Internet-Draft                  PKI Guide                    August 2020
    # See the POLICY FORMAT section of `man ca`.
    countryName             = optional
    stateOrProvinceName     = optional
+
+
+
+Moskowitz, et al.      Expires September 12, 2019              [Page 26]
+
+Internet-Draft                  PKI Guide                     March 2019
+
+
    organizationName        = optional
    organizationalUnitName  = optional
    commonName              = optional
@@ -1506,14 +1491,6 @@ Internet-Draft                  PKI Guide                    August 2020
    # See <https://en.wikipedia.org/wiki/Certificate_signing_request>.
    countryName                     = Country Name (2 letter code)
    stateOrProvinceName             = State or Province Name
-
-
-
-Moskowitz, et al.       Expires February 10, 2021              [Page 27]
-
-Internet-Draft                  PKI Guide                    August 2020
-
-
    localityName                    = Locality Name
    0.organizationName              = Organization Name
    organizationalUnitName          = Organizational Unit Name
@@ -1529,6 +1506,13 @@ Internet-Draft                  PKI Guide                    August 2020
 
    [ req_ext ]
    subjectAltName = $ENV::subjectAltName
+
+
+
+Moskowitz, et al.      Expires September 12, 2019              [Page 27]
+
+Internet-Draft                  PKI Guide                     March 2019
+
 
    [ v3_ca ]
    # Extensions for a typical CA (`man x509v3_config`).
@@ -1562,14 +1546,6 @@ Internet-Draft                  PKI Guide                    August 2020
    [ server_cert ]
    # Extensions for server certificates (`man x509v3_config`).
    basicConstraints = CA:FALSE
-
-
-
-Moskowitz, et al.       Expires February 10, 2021              [Page 28]
-
-Internet-Draft                  PKI Guide                    August 2020
-
-
    nsCertType = server
    nsComment = "OpenSSL Generated Server Certificate"
    subjectKeyIdentifier = hash
@@ -1586,12 +1562,19 @@ Internet-Draft                  PKI Guide                    August 2020
 
    [ ocsp ]
    # Extension for OCSP signing certificates (`man ocsp`).
+
+
+
+Moskowitz, et al.      Expires September 12, 2019              [Page 28]
+
+Internet-Draft                  PKI Guide                     March 2019
+
+
    basicConstraints = CA:FALSE
    subjectKeyIdentifier = hash
    authorityKeyIdentifier = keyid,issuer
    keyUsage = critical, digitalSignature
    extendedKeyUsage = critical, OCSPSigning
-   </sourcecode>
 
 A.3.  OpenSSL 802.1AR Intermediate config file
 
@@ -1618,14 +1601,6 @@ A.3.  OpenSSL 802.1AR Intermediate config file
    crl_dir           = $dir/crl
    new_certs_dir     = $dir/newcerts
    database          = $dir/index.txt
-
-
-
-Moskowitz, et al.       Expires February 10, 2021              [Page 29]
-
-Internet-Draft                  PKI Guide                    August 2020
-
-
    serial            = $dir/serial
    RANDFILE          = $dir/private/.rand
 
@@ -1643,6 +1618,14 @@ Internet-Draft                  PKI Guide                    August 2020
    default_md        = sha256
 
    name_opt          = ca_default
+
+
+
+Moskowitz, et al.      Expires September 12, 2019              [Page 29]
+
+Internet-Draft                  PKI Guide                     March 2019
+
+
    cert_opt          = ca_default
    default_enddate   = 99991231235959Z # per IEEE 802.1AR
    preserve          = no
@@ -1674,14 +1657,6 @@ Internet-Draft                  PKI Guide                    August 2020
    [ req ]
    # Options for the `req` tool (`man req`).
    default_bits        = 2048
-
-
-
-Moskowitz, et al.       Expires February 10, 2021              [Page 30]
-
-Internet-Draft                  PKI Guide                    August 2020
-
-
    distinguished_name  = req_distinguished_name
    string_mask         = utf8only
    req_extensions      = req_ext
@@ -1699,6 +1674,14 @@ Internet-Draft                  PKI Guide                    August 2020
    localityName                    = Locality Name
    0.organizationName              = Organization Name
    organizationalUnitName          = Organizational Unit Name
+
+
+
+Moskowitz, et al.      Expires September 12, 2019              [Page 30]
+
+Internet-Draft                  PKI Guide                     March 2019
+
+
    commonName                      = Common Name
    serialNumber                    = Device Serial Number
 
@@ -1730,14 +1713,6 @@ Internet-Draft                  PKI Guide                    August 2020
    keyUsage = critical, cRLSign, keyCertSign
 
    [ 8021ar_idevid ]
-
-
-
-Moskowitz, et al.       Expires February 10, 2021              [Page 31]
-
-Internet-Draft                  PKI Guide                    August 2020
-
-
    # Extensions for IEEE 802.1AR iDevID
    #   certificates (`man x509v3_config`).
    basicConstraints = CA:FALSE
@@ -1755,10 +1730,17 @@ Internet-Draft                  PKI Guide                    August 2020
    # Extension for OCSP signing certificates (`man ocsp`).
    basicConstraints = CA:FALSE
    subjectKeyIdentifier = hash
+
+
+
+Moskowitz, et al.      Expires September 12, 2019              [Page 31]
+
+Internet-Draft                  PKI Guide                     March 2019
+
+
    authorityKeyIdentifier = keyid,issuer
    keyUsage = critical, digitalSignature
    extendedKeyUsage = critical, OCSPSigning
-   </sourcecode>
 
 Authors' Addresses
 
@@ -1787,13 +1769,6 @@ Authors' Addresses
    Email: Frank.xialiang@huawei.com
 
 
-
-
-Moskowitz, et al.       Expires February 10, 2021              [Page 32]
-
-Internet-Draft                  PKI Guide                    August 2020
-
-
    Michael C. Richardson
    Sandelman Software Works
 
@@ -1814,35 +1789,4 @@ Internet-Draft                  PKI Guide                    August 2020
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Moskowitz, et al.       Expires February 10, 2021              [Page 33]
+Moskowitz, et al.      Expires September 12, 2019              [Page 32]
