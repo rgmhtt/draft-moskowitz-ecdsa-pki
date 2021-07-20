@@ -17,7 +17,7 @@ touch index.txt index.txt.attr
 if [ ! -f serial ]; then echo 00 >serial; fi
 )
 
-sn=8
+export sn=8   # how many digits for serial number
 
 # edit these to suit
 countryName="/C=US"
