@@ -1,12 +1,17 @@
 
-export dir=$cadir/intermediate
-mkdir $dir
-cd $dir
-mkdir certs crl csr newcerts private
+export intdir=${intdir-$cadir/intermediate}
+mkdir -p $intdir
+
+(
+cd $intdir
+mkdir -p certs crl csr newcerts private
 chmod 700 private
-touch index.txt
+touch index.txt index.txt.attr
+if [ ! -f serial ]; then echo 00 >serial; fi
+)
+
 sn=8 # hex 8 is minimum, 19 is maximum
-echo 1000 > $dir/crlnumber
+echo 1000 > $intdir/crlnumber
 
 # cd $dir
 export crlDP=
